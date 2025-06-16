@@ -1,106 +1,84 @@
 {
-  "name": "custom-emit-interface",
-  "private": true,
+  "name": "test01-emit",
+  "version": "1.0.0",
+  "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
-  "workspaces": [
-    "lib"
+  "main": "dist/main.js",
+  "module": "dist/module.js",
+  "source": "src/lib/index.ts",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "targets": {
+    "emit-app": {
+      "source": "public/index.html",
+      "context": "browser"
+    }
+  },
+  "homepage": ".",
   "scripts": {
-    "build": "dotenv -- node ./run-parcel.js build build ",
-    "build:lib": "yarn workspace test01-emit build",
+    "build": "dotenv -- node ./run-parcel.js build build",
     "serve": "dotenv -- node ./run-parcel.js serve",
-    "prepare:static": "cp -r static/* public/",
+    "start": "parcel",
+    "build-lib": "parcel build ./src/lib/index.ts --dist-dir dist",
     "clean": "rm -rf node_modules dist build yarn.lock .parcel-cache && yarn cache clean",
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
-    "fix-conflicts": "prettier --write . && eslint . --fix",
-    "prepublishOnly": "npm run build:lib",
-    "preversion": "npm run lint",
-    "version": "npm run format && git add -A src",
-    "postversion": "git push && git push --tags"
-  },
-  "peerDependencies": {
-    "@emotion/react": ">=11.13.3",
-    "@emotion/styled": ">=11.13.0",
-    "@mui/icons-material": ">=6.1.6",
-    "@mui/material": ">=6.1.6",
-    "@mui/system": ">=5.0.0",  
-    "mapbox-gl": ">=3.7.0", 
-    "react": ">=18.3.1",
-    "react-dom": ">=18.3.1",
-    "react-is": ">=18.3.1", 
-    "react-loader-spinner": "^6.1.6",
-    "react-resizable-panels": "^2.1.1",
-    "react-router-dom": "^6.27.0",
-    "styled-components": ">=6.1.13" 
+    "fix-conflicts": "prettier --write . && eslint . --fix"
   },
   "dependencies": {
     "@date-io/moment": "^3.0.0",
+    "@emotion/react": "^11.13.3",
+    "@emotion/styled": "^11.13.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@mui/icons-material": "^6.1.6",
+    "@mui/material": "^6.1.6",
     "@mui/x-date-pickers": "^7.22.0",
-    "@swc/helpers": "^0.5.3", 
-    "@turf/bbox-polygon": "^7.2.0", 
-    "@turf/boolean-intersects": "^7.2.0", 
-    "@turf/length": "^7.2.0", 
+    "@swc/helpers": "^0.5.3",
+    "@turf/bbox-polygon": "^7.2.0",
+    "@turf/boolean-intersects": "^7.2.0",
+    "@turf/length": "^7.2.0",
     "chart.js": "^4.4.3",
     "chartjs-adapter-luxon": "^1.3.1",
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "d3": "^7.9.0",
+    "dotenv-cli": "^8.0.0",
     "luxon": "^3.5.0",
+    "mapbox-gl": "^3.7.0",
     "mapboxgl-timeline": "^1.0.2",
     "moment": "^2.30.1",
-    "uuid": "^11.0.3", 
-    "web-vitals": "^5.0.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.24.0", 
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@mui/icons-material": "^6.1.6",
-    "@mui/material": "^6.1.6",
-    "@mui/system": "^6.1.6", 
-    "@parcel/config-default": "2.15.1", 
-    "@parcel/core": "2.15.1", 
-    "@parcel/packager-raw-url": "2.15.1", 
-    "@parcel/packager-ts": "2.15.1", 
-    "@parcel/transformer-typescript-types": "2.15.1", 
-    "@parcel/transformer-webmanifest": "2.15.1", 
-    "@testing-library/dom": "^9.3.4", 
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^13.0.0",
-    "@testing-library/user-event": "^13.2.1",
-    "@types/d3": "^7.4.3", 
-    "@types/jest": "^27.0.1",
-    "@types/luxon": "^3.4.2", 
-    "@types/mapbox-gl": "^2.7.20", 
-    "@types/node": "^16.7.13",
-    "@types/react": "^18.3.1", 
-    "@types/react-dom": "^18.3.1", 
-    "@types/react-is": "^18.2.4", 
-    "@types/styled-components": "^5.1.34", 
-    "@types/uuid": "^10.0.0", 
-    "dotenv-cli": "^8.0.0", 
-    "eslint": "^8.56.0",
-    "eslint-config-prettier": "^10.0.1", 
-    "eslint-plugin-prettier": "^5.2.3", 
-    "mapbox-gl": "^3.7.0",
-    "parcel": "^2.15.1", 
-    "parcel-reporter-static-files-copy": "^1.5.3", 
-    "prettier": "^3.4.2",
+    "parcel": "^2.13.3",
+    "parcel-resolver-tspaths": "^0.0.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-is": "^18.2.0", 
     "react-loader-spinner": "^6.1.6",
     "react-resizable-panels": "^2.1.1",
     "react-router-dom": "^6.27.0",
     "styled-components": "^6.1.13",
-    "typescript": "^4.4.2" 
+    "uuid": "^11.0.3",
+    "web-vitals": "^5.0.1"
+  },
+  "devDependencies": {
+    "@parcel/packager-raw-url": "2.15.2",
+    "@parcel/packager-ts": "2.15.2",
+    "@parcel/transformer-typescript-types": "2.15.2",
+    "@parcel/transformer-webmanifest": "2.15.2",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.13",
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "parcel-reporter-static-files-copy": "^1.5.3",
+    "typescript": ">=3.0.0"
   },
   "eslintConfig": {
     "extends": [
@@ -120,32 +98,8 @@
       "last 1 safari version"
     ]
   },
-  "resolutions": {
-    "styled-components": "^6.1.13" 
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/US-GHG-Center/custom-emit-interface.git"
-  },
-  "keywords": [
-    "react",
-    "interface",
-    "template",
-    "mui",
-    "mapbox",
-    "chart"
-  ],
-  "author": "",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/US-GHG-Center/custom-emit-interface/issues"
-  },
-  "homepage": "https://github.com/US-GHG-Center/custom-emit-interface#readme",
-  "publishConfig": {
-    "access": "public"
-  },
-  "alias": {
-    "$components": "./src/components",
-    "$context": "./src/context/"
+    "url": "https://github.com/US-GHG-Center/custom-emit-interface.git"
   }
 }

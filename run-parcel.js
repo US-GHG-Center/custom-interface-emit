@@ -6,10 +6,10 @@ const publicUrl = process.env.PUBLIC_URL;
 
 if (!publicUrl) {
   console.error(
-    'Error: PARCEL_APP_BASE_PATH is not defined in your .env file or environment.'
+    'Error: PUBLIC_URL is not defined in your .env file or environment.'
   );
   console.error(
-    'Please define it (e.g., PARCEL_APP_BASE_PATH="/my/custom/path").'
+    'Please define it (e.g., PUBLIC_URL="/my/custom/path").'
   );
   process.exit(1);
 }
@@ -20,10 +20,10 @@ const mode = process.argv[2];
 console.log({ mode });
 switch (mode) {
   case 'build':
-    parcelCommand = `parcel build public/index.html --public-url "${publicUrl}" --dist-dir ${buildDir}`;
+    parcelCommand = `parcel build --public-url "${publicUrl}" --dist-dir ${buildDir}`;
     break;
   case 'serve':
-    parcelCommand = `parcel public/index.html --public-url "${publicUrl}"`;
+    parcelCommand = `parcel  --public-url "${publicUrl}"`;
     break;
   default:
     console.error(`[run-parcel.js] ❌ Unknown mode: ${mode}`);
