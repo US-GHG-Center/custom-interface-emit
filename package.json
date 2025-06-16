@@ -17,7 +17,7 @@
     "react-dom": "^18.3.1",
     "react-is": "^18.2.0",
     "react-router-dom": "^6.27.0",
-    "test01-emit": "^1.0.10",
+    "test01-emit": "1.1.1",
     "styled-components": "^6.1.13"
   },
   "resolutions": {

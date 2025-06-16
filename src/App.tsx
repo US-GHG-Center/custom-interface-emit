@@ -15,7 +15,7 @@ const emitConfig = {
   baseStacApiUrl: "https://earth.gov/ghgcenter/api/stac/",
   mapboxToken:
     "pk.eyJ1IjoiY292aWQtbmFzYSIsImEiOiJjbGNxaWdqdXEwNjJnM3VuNDFjM243emlsIn0.NLbvgae00NUD5K64CD6ZyA",
-  mapBoxStyle: "mapbox://styles/covid-nasa",
+  mapboxStyle: "mapbox://styles/covid-nasa",
   basemapStyle: "cldu1cb8f00ds01p6gi583w1m",
   geoApifyKey: "58347c078a5645d6b6367ae88984be7c",
   latlonEndpoint: "https://api.geoapify.com/v1/geocode/reverse",
@@ -40,12 +40,7 @@ function App() {
     <BrowserRouter>
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <div className="fullSize">
-          <EmitInterface
-            collectionId="emit-ch4plume-v1"
-            zoomLocation={[-98.771556, 32.967243]}
-            zoomLevel={4}
-            config={emitConfig}
-          />
+          <EmitInterface config={emitConfig} />
         </div>
       </LocalizationProvider>
     </BrowserRouter>
