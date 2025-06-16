@@ -1,26 +1,21 @@
-import { EmitInterfaceConfig } from '../pages/emitInterface/types';
+import { EmitInterfaceConfig } from '../../pages/emitInterface/types';
 
 /**
  * Default configuration for the EMIT Interface
  * These values will be used if no user configuration is provided
  */
 const defaultConfig: EmitInterfaceConfig = {
-  // API Endpoints
-  stacApiUrl:
-    'https://earth.gov/ghgcenter/api/stac/collections/emit-ch4plume-v1/items',
-  metadataEndpoint:
-    'https://earth.jpl.nasa.gov/emit-mmgis-lb/Missions/EMIT/Layers/coverage/combined_plume_metadata.json',
-  coverageUrl:
-    'https://earth.jpl.nasa.gov/emit-mmgis/Missions/EMIT/Layers/coverage/coverage_pub.json',
-  baseStacApiUrl: 'https://earth.gov/ghgcenter/api/stac/',
-  mapboxToken:
-    'pk.eyJ1IjoiY292aWQtbmFzYSIsImEiOiJjbGNxaWdqdXEwNjJnM3VuNDFjM243emlsIn0.NLbvgae00NUD5K64CD6ZyA',
-  mapboxStyle: 'mapbox://styles/covid-nasa',
-  basemapStyle: 'cldu1cb8f00ds01p6gi583w1m',
-  geoApifyKey: '58347c078a5645d6b6367ae88984be7c',
-  latlonEndpoint: 'https://api.geoapify.com/v1/geocode/reverse',
-  rasterApiUrl: 'https://earth.gov/ghgcenter/api/raster',
-  publicUrl: '/ghgcenter/custom-interfaces/emit-plume-viewer-test',
+  publicUrl: process.env.PUBLIC_URL || '',
+  mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN || '',
+  mapboxStyle: process.env.REACT_APP_MAPBOX_STYLE_URL || '',
+  basemapStyle: process.env.REACT_APP_BASEMAP_STYLES_MAPBOX_ID || '',
+  stacApiUrl: process.env.REACT_APP_STAC_API_URL || '',
+  metadataEndpoint: process.env.REACT_APP_METADATA_ENDPOINT || '',
+  coverageUrl: process.env.REACT_APP_COVERAGE_URL || '',
+  baseStacApiUrl: process.env.REACT_APP_BASE_STAC_API_URL || '',
+  geoApifyKey: process.env.REACT_APP_GEOAPIFY_APIKEY || '',
+  latlonEndpoint: process.env.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT || '',
+  rasterApiUrl: process.env.REACT_APP_RASTER_API_URL || '',
 
   // Map Configuration
   defaultZoomLocation: [-98.771556, 32.967243],
@@ -65,8 +60,12 @@ export const validateConfig = (
     'baseStacApiUrl',
   ];
 
-  const missingFields = requiredFields.filter((field) => !config[field]);
-
+  const missingFields = requiredFields.filter(
+    (field) =>
+      config[field] === undefined ||
+      config[field] === null ||
+      config[field] === ''
+  );
   if (missingFields.length > 0) {
     return { result: false, missingFields };
   }

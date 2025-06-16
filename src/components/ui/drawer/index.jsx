@@ -84,13 +84,10 @@ export function PersistentDrawerRight({
   collectionId,
   onSelectVizLayer,
   onHoverOnVizLayer,
-  config,
 }) {
   const [numberOfVizItems, setNumberOfVizItems] = useState(0);
   const highlightedCardRef = useRef(null);
-  const rasterApiUrl = config?.rasterApiUrl
-    ? config.rasterApiUrl
-    : process.env.REACT_APP_RASTER_API_URL;
+
   const handleDrawerClose = () => {
     setOpen(false);
   };
@@ -170,7 +167,6 @@ export function PersistentDrawerRight({
               onSelectVizLayer={onSelectVizLayer}
               hoveredVizItemId={hoveredVizLayerId}
               onHoverOnVizLayer={onHoverOnVizLayer}
-              rasterApiUrl={rasterApiUrl}
             />
           ))
         ) : (

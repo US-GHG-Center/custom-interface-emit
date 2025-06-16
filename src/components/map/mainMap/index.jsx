@@ -14,9 +14,9 @@ import { MapboxProvider } from '../../../context/mapContext';
  *
  * @returns {JSX.Element} Wrapped components within the Mapbox context provider.
  */
-export const MainMap = ({ children, config }) => {
+export const MainMap = ({ children }) => {
   return (
-    <MapboxProvider config={config}>
+    <MapboxProvider>
       {/* Other components that need access to the map */}
       {children}
     </MapboxProvider>

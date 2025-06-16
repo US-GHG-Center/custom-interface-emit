@@ -1,5 +1,5 @@
 import { bboxPolygon } from '@turf/bbox-polygon';
-import {booleanIntersects} from '@turf/boolean-intersects'
+import { booleanIntersects } from '@turf/boolean-intersects';
 
 /**
  * Generates a unique source ID string.
@@ -64,23 +64,26 @@ export const addSourceLayerToMap = (
     '%2C' +
     VMAX +
     '&nodata=-9999';
+  try {
+    map.addSource(sourceId, {
+      type: 'raster',
+      tiles: [TILE_URL],
+      tileSize: 256,
+      bounds: feature.bbox,
+    });
 
-  map.addSource(sourceId, {
-    type: 'raster',
-    tiles: [TILE_URL],
-    tileSize: 256,
-    bounds: feature.bbox,
-  });
-
-  map.addLayer({
-    id: layerId,
-    type: 'raster',
-    source: sourceId,
-    layout: {
-      visibility: 'none', // Set the layer to be hidden initially
-    },
-    paint: {},
-  });
+    map.addLayer({
+      id: layerId,
+      type: 'raster',
+      source: sourceId,
+      layout: {
+        visibility: 'none', // Set the layer to be hidden initially
+      },
+      paint: {},
+    });
+  } catch (err) {
+    console.warn('Error while adding layer', err);
+  }
 };
 
 /**

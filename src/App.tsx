@@ -16,16 +16,7 @@ function App() {
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <BrowserRouter basename={BASE_PATH}>
           <Routes>
-            <Route
-              path='/'
-              element={
-                <EmitInterface
-                  collectionId='emit-ch4plume-v1'
-                  zoomLocation={[-98.771556, 32.967243]}
-                  zoomLevel={4}
-                />
-              }
-            />
+            <Route path='/' element={<EmitInterface />} />
           </Routes>
         </BrowserRouter>
       </LocalizationProvider>

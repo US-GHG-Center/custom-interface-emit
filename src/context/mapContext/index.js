@@ -2,6 +2,7 @@ import React, { createContext, useContext, useRef, useEffect } from 'react';
 import mapboxgl from 'mapbox-gl';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
+import { useConfig } from '../configContext';
 
 const MapboxContext = createContext();
 
@@ -16,19 +17,13 @@ const MapboxContext = createContext();
  *
  * @returns {JSX.Element}
  */
-export const MapboxProvider = ({ children, config }) => {
+export const MapboxProvider = ({ children }) => {
+  const { config } = useConfig();
   const mapContainer = useRef(null);
   const map = useRef(null);
-  const accessToken = config?.mapboxToken
-    ? config.mapboxToken
-    : process.env.REACT_APP_MAPBOX_TOKEN;
-  const mapboxStyleBaseUrl = config?.mapboxStyle
-    ? config.mapboxStyle
-    : process.env.REACT_APP_MAPBOX_STYLE_URL;
-  const BASEMAP_STYLES_MAPBOX_ID = config?.basemapStyle
-    ? config.basemapStyle
-    : process.env.REACT_APP_BASEMAP_STYLES_MAPBOX_ID ||
-      'cldu1cb8f00ds01p6gi583w1m';
+  const accessToken = config?.mapboxToken;
+  const mapboxStyleBaseUrl = config?.mapboxStyle;
+  const BASEMAP_STYLES_MAPBOX_ID = config?.basemapStyle;
 
   useEffect(() => {
     if (map.current) return;
@@ -69,7 +64,7 @@ export const MapboxProvider = ({ children, config }) => {
 
       // Handle style loading errors
       map.current.on('error', (e) => {
-        console.error('Mapbox error:', e);
+        console.warn('Mapbox error:', e);
       });
     } catch (error) {
       console.error('Error initializing map:', error);
