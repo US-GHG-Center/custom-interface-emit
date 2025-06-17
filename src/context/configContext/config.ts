@@ -5,7 +5,6 @@ import { EmitInterfaceConfig } from '../../pages/emitInterface/types';
  * These values will be used if no user configuration is provided
  */
 const defaultConfig: EmitInterfaceConfig = {
-  publicUrl: process.env.PUBLIC_URL || '',
   mapboxToken: process.env.REACT_APP_MAPBOX_TOKEN || '',
   mapboxStyle: process.env.REACT_APP_MAPBOX_STYLE_URL || '',
   basemapStyle: process.env.REACT_APP_BASEMAP_STYLES_MAPBOX_ID || '',
@@ -16,14 +15,6 @@ const defaultConfig: EmitInterfaceConfig = {
   geoApifyKey: process.env.REACT_APP_GEOAPIFY_APIKEY || '',
   latlonEndpoint: process.env.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT || '',
   rasterApiUrl: process.env.REACT_APP_RASTER_API_URL || '',
-
-  // Map Configuration
-  defaultZoomLocation: [-98.771556, 32.967243],
-  defaultZoomLevel: 4,
-  defaultCollectionId: 'emit-ch4plume-v1',
-
-  // Date Range
-  defaultStartDate: '2022-08-22',
 };
 
 /**
@@ -58,6 +49,9 @@ export const validateConfig = (
     'metadataEndpoint',
     'coverageUrl',
     'baseStacApiUrl',
+    'mapboxToken',
+    'mapboxStyle',
+    'geoApifyKey',
   ];
 
   const missingFields = requiredFields.filter(

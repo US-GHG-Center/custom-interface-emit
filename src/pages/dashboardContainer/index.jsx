@@ -29,21 +29,19 @@ import { useConfig } from '../../context/configContext/index.jsx';
  */
 export const DashboardContainer = ({
   collectionId,
-  zoomLocation: initialZoomLocation,
-  zoomLevel: initialZoomLevel,
+  defaultZoomLocation,
+  defaultZoomLevel,
+  defaultStartDate,
 }) => {
   const { config } = useConfig();
   const [searchParams] = useSearchParams();
   const [coverage, setCoverage] = useState();
   const [zoomLocation, setZoomLocation] = useState(
-    initialZoomLocation ||
-      searchParams.get('zoom-location') ||
-      config.defaultZoomLocation
+    searchParams.get('zoom-location') || defaultZoomLocation
   );
   const [zoomLevel, setZoomLevel] = useState(
-    initialZoomLevel ||
-      searchParams.get('zoom-level') ||
-      config.defaultZoomLevel
+
+    searchParams.get('zoom-level') || defaultZoomLevel
   );
   const [collectionMeta, setCollectionMeta] = useState({});
   const [plumes, setPlumes] = useState([]);
@@ -57,17 +55,13 @@ export const DashboardContainer = ({
 
     const init = async () => {
       try {
-        const collectionUrl = `${config.baseStacApiUrl}/collections/${
-          collectionId || config.defaultCollectionId
-        }`;
+        const collectionUrl = `${config.baseStacApiUrl}/collections/${collectionId}`;
         const collectionMetadata = await fetchCollectionMetadata(collectionUrl);
 
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
-
         const metadata = await fetchData(config.metadataEndpoint);
         const stacData = await fetchAllFromSTACAPI(config.stacApiUrl);
-
         if (!isMounted) return;
         const { data, latestPlume } = await transformMetadata(
           metadata,
@@ -76,7 +70,7 @@ export const DashboardContainer = ({
         );
         setPlumes(data);
         setFilterDateRange({
-          startDate: config.defaultStartDate,
+          startDate: defaultStartDate,
           endDate: latestPlume?.properties?.datetime,
         });
         setLoadingData(false);
@@ -93,14 +87,7 @@ export const DashboardContainer = ({
     return () => {
       isMounted = false;
     };
-  }, [
-    collectionId,
-    config.baseStacApiUrl,
-    config.metadataEndpoint,
-    config.stacApiUrl,
-    config.defaultCollectionId,
-    config.defaultStartDate,
-  ]);
+  }, [collectionId, defaultZoomLocation, defaultZoomLevel, defaultStartDate]);
 
   // Fetch coverage data
   useEffect(() => {
@@ -135,9 +122,8 @@ export const DashboardContainer = ({
       setZoomLevel={setZoomLevel}
       collectionMeta={collectionMeta}
       filterDateRange={filterDateRange}
-      collectionId={collectionId || config.defaultCollectionId}
+      collectionId={collectionId}
       loadingData={loadingData}
     />
   );
 };
-
