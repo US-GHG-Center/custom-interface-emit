@@ -1,6 +1,6 @@
 {
   "name": "test01-emit",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
   "main": "dist/main.js",
@@ -21,8 +21,8 @@
   },
   "homepage": ".",
   "scripts": {
-    "build": "dotenv -- node ./run-parcel.js build build",
-    "serve": "dotenv -- node ./run-parcel.js serve",
+    "build": "parcel build --dist-dir build",
+    "serve": "parcel",
     "start": "parcel",
     "build-lib": "parcel build ./src/lib/index.ts --dist-dir dist",
     "clean": "rm -rf node_modules dist build yarn.lock .parcel-cache && yarn cache clean",
@@ -52,7 +52,6 @@
     "chartjs-plugin-annotation": "^3.0.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "d3": "^7.9.0",
-    "dotenv-cli": "^8.0.0",
     "luxon": "^3.5.0",
     "mapbox-gl": "^3.7.0",
     "mapboxgl-timeline": "^1.0.2",
