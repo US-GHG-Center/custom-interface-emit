@@ -21,8 +21,8 @@
   },
   "homepage": ".",
   "scripts": {
-    "build": "parcel build --dist-dir build",
-    "serve": "parcel",
+    "build": "dotenv -- node ./run-parcel.js build build",
+    "serve": "dotenv -- node ./run-parcel.js serve",
     "start": "parcel",
     "build-lib": "parcel build ./src/lib/index.ts --dist-dir dist",
     "clean": "rm -rf node_modules dist build yarn.lock .parcel-cache && yarn cache clean",
@@ -35,6 +35,7 @@
     "@date-io/moment": "^3.0.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
+    "dotenv-cli": "^8.0.0",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
