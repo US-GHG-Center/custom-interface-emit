@@ -14,7 +14,7 @@ function App() {
     <Fragment>
       <CssBaseline />
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <BrowserRouter basename={BASE_PATH}>
+        <BrowserRouter basename={'/'}>
           <Routes>
             <Route path='/' element={<EmitInterface />} />
           </Routes>
