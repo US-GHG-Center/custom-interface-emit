@@ -13,4 +13,8 @@ export interface EmitInterfaceConfig {
 
 export interface EmitInterfaceProps {
   config?: Partial<EmitInterfaceConfig>;
+  defaultCollectionId: string;
+  defaultZoomLocation: string;
+  defaultZoomLevel: string;
+  defaultStartDate: string;
 }
