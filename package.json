@@ -1,6 +1,6 @@
 {
-  "name": "test01-emit",
-  "version": "1.1.2",
+  "name": "emit-interface",
+  "version": "0.0.1",
   "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
   "main": "dist/main.js",
@@ -57,7 +57,7 @@
     "mapbox-gl": "^3.7.0",
     "mapboxgl-timeline": "^1.0.2",
     "moment": "^2.30.1",
-    "parcel": "^2.13.3",
+    "parcel": "2.15.2",
     "parcel-resolver-tspaths": "^0.0.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
