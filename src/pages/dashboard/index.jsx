@@ -16,15 +16,16 @@ import {
   CoverageLayers,
   MapViewPortComponent,
   RASTER_ZOOM_LEVEL,
-} from '@components';
+  ToggleSwitch,
+} from '../../components';
 
 import styled from 'styled-components';
 
 import './index.css';
-import ToggleSwitch from '../../components/ui/toggle';
 import { filterByDateRange, getPopupContent } from './helper';
 import Plumes from './helper/PlumeLayer';
 import moment from 'moment';
+import { useConfig } from '../../context/configContext';
 
 const TITLE = 'EMIT Methane Plume Viewer';
 const DESCRIPTION =
@@ -85,6 +86,8 @@ export function Dashboard({
   // states for components/controls
   const [openDrawer, setOpenDrawer] = useState(false);
 
+  const { config } = useConfig();
+
   //colormap states
   const [VMAX, setVMAX] = useState(100);
   const [VMIN, setVMIN] = useState(-92);
@@ -139,7 +142,7 @@ export function Dashboard({
       newItems[item?.id] = item;
     });
     return newItems;
-  }
+  };
 
   const handleResetHome = () => {
     setFromSearch(false);
@@ -201,9 +204,8 @@ export function Dashboard({
       setShowCoverages(val);
     }
   };
-
   return (
-    <Box className='fullSize'>
+    <div className='fullSize'>
       <div id='dashboard-map-container'>
         <MainMap>
           <Paper className='title-container'>
@@ -300,6 +302,6 @@ export function Dashboard({
         />
       )}
       {loadingData && <LoadingSpinner />}
-    </Box>
+    </div>
   );
 }

@@ -24,91 +24,63 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
   const { map } = useMapbox();
   const [markersVisible, setMarkersVisible] = useState(true);
   const markersRef = useRef([]);
-  /**
-   * Creates a custom Mapbox marker element and adds popup + event handlers.
-   *
-   * @param {Object} item - Single marker object.
-   * @param {string} item.id - Unique identifier for the marker.
-   * @param {Object} item.coordinates - Lat/Lon values.
-   * @returns {Object} Marker, popup, and element metadata for tracking.
-   */
-  // Memoized marker creation function
+
   const createMarker = useCallback(
     (item) => {
+      if (!map || !item?.coordinates?.lat || !item?.coordinates?.lon) {
+        console.warn('Skipping marker: invalid map or coordinates', item);
+        return null;
+      }
+
       const { coordinates, id } = item;
       const { lon, lat } = coordinates;
       const markerColor = '#00b7eb';
 
-      // Create marker element
       const el = document.createElement('div');
       el.className = 'marker';
       el.innerHTML = getMarkerSVG(markerColor);
 
-      // Create Mapbox marker
-      const marker = new mapboxgl.Marker({
-        element: el,
-        anchor: 'top',
-      }).setLngLat([lon, lat]);
+      const marker = new mapboxgl.Marker({ element: el, anchor: 'top' }).setLngLat([lon, lat]);
 
-      // Create popup if content provided
       const popup = getPopupContent
         ? new mapboxgl.Popup({
             offset: 5,
             closeButton: false,
             closeOnClick: false,
           }).setHTML(getPopupContent(item))
-        : undefined;
+        : null;
 
-      // Event handlers
-      const handleMouseEnter = () => {
-        if (popup) {
-          marker.setPopup(popup).togglePopup();
-        }
-      };
-
-      const handleMouseLeave = () => {
-        if (popup) {
-          popup.remove();
-        }
-      };
-
-      const handleClick = (e) => {
+      el.addEventListener('mouseenter', () => popup && marker.setPopup(popup).togglePopup());
+      el.addEventListener('mouseleave', () => popup?.remove());
+      el.addEventListener('click', (e) => {
         e.stopPropagation();
-        onSelectVizItem && onSelectVizItem(id);
-      };
-
-      // Add event listeners
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-      el.addEventListener('click', handleClick);
+        onSelectVizItem?.(id);
+      });
 
       return { marker, element: el, popup, id };
     },
     [map, onSelectVizItem, getPopupContent]
   );
 
-  // Markers management effect
   useEffect(() => {
     if (!map || !items?.length) return;
 
-    // Clean up existing markers
+    // Remove existing
     markersRef.current.forEach(({ marker, element, popup }) => {
       element.remove();
       marker.remove();
       popup?.remove();
     });
 
-    // Create and add new markers
-    const newMarkers = items.map(createMarker);
+    // Create new markers
+    const newMarkers = items.map(createMarker).filter(Boolean);
     newMarkers.forEach(({ marker }) => marker.addTo(map));
-
-    // Update markers visibility and ref
     newMarkers.forEach(({ element }) => {
       element.style.display = markersVisible ? 'block' : 'none';
     });
+
     markersRef.current = newMarkers;
 
-    // Cleanup function
     return () => {
       newMarkers.forEach(({ marker, element, popup }) => {
         element.remove();
@@ -118,19 +90,21 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
     };
   }, [items, map, createMarker, markersVisible]);
 
-  // Zoom-based visibility effect
   useEffect(() => {
     if (!map) return;
 
     const handleZoom = () => {
-      const currentZoom = map.getZoom();
-      setMarkersVisible(currentZoom <= ZOOM_LEVEL_MARGIN);
+      const zoom = map.getZoom();
+      const show = zoom <= ZOOM_LEVEL_MARGIN;
+      setMarkersVisible(show);
+
+      markersRef.current.forEach(({ element }) => {
+        element.style.display = show ? 'block' : 'none';
+      });
     };
 
     map.on('zoom', handleZoom);
-    return () => {
-      map.off('zoom', handleZoom);
-    };
+    return () => map.off('zoom', handleZoom);
   }, [map]);
 
   return null;

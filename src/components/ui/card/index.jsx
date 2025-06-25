@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import Divider from '@mui/material/Divider';
 import DownloadIcon from '@mui/icons-material/Download';
 import './index.css';
+import { useConfig } from '../../../context/configContext';
 
 const HorizontalLayout = styled.div`
   width: 100%;
@@ -93,9 +94,11 @@ export const VisualizationItemCard = forwardRef(
     },
     ref
   ) => {
+    const { config } = useConfig();
+    const rasterApiUrl = config.rasterApiUrl;
     const vizItemSourceId = vizItem?.id;
     const orbit = vizItem?.plumeProperties?.orbit;
-    const imageUrl = `${process.env.REACT_APP_RASTER_API_URL}/collections/emit-ch4plume-v1/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
+    const imageUrl = `${rasterApiUrl}/collections/emit-ch4plume-v1/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
     const tiffUrl = vizItem?.plumeProperties?.assetLink;
     const location = vizItem?.plumeProperties?.location;
     const maxPlumeConcentration = vizItem?.plumeProperties?.maxConcentration;

@@ -12,9 +12,16 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist",
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"]
+  "include": ["src","static"],
+  "paths": {
+    "$components/*": "src/components/*",
+    "$context/*": "src/context/*"
+  }
 }

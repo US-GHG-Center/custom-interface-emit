@@ -16,7 +16,7 @@ import './index.css';
  * @returns {JSX.Element}
  */
 
-const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
+export const  ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
@@ -51,4 +51,4 @@ const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
   );
 };
 
-export default ToggleSwitch;
+
