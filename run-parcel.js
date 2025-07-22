@@ -8,16 +8,13 @@ if (!publicUrl) {
   console.error(
     'Error: PUBLIC_URL is not defined in your .env file or environment.'
   );
-  console.error(
-    'Please define it (e.g., PUBLIC_URL="/my/custom/path").'
-  );
+  console.error('Please define it (e.g., PUBLIC_URL="/my/custom/path").');
   process.exit(1);
 }
 
 let parcelCommand;
 
 const mode = process.argv[2];
-console.log({ mode });
 switch (mode) {
   case 'build':
     parcelCommand = `parcel build --public-url "${publicUrl}" --dist-dir ${buildDir}`;
