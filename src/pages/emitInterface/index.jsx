@@ -1,6 +1,7 @@
 import React from 'react';
 import { DashboardContainer } from '../dashboardContainer';
 import { ConfigProvider } from '../../context/configContext';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useSearchParams } from 'react-router-dom';
