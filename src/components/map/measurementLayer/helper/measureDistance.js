@@ -1,4 +1,4 @@
-import {length}  from '@turf/length';
+import * as turf from '@turf/turf';
 const { sourceExists, layerExists } = require('../../utils');
 
 // GeoJSON object to hold  measurement features
@@ -246,7 +246,7 @@ export function createMeasuringLine(e, measurePoints, mapScaleUnit) {
   const endCoordinates = [e.lngLat.lng, e.lngLat.lat];
   linestring.geometry.coordinates = [startCoordinates, endCoordinates];
   const turfUnits = mapScaleUnit === 'mi' ? 'miles' : 'kilometers';
-  const distance = length(linestring, {
+  const distance = turf.length(linestring, {
     units: turfUnits,
   });
   const labelUnit = mapScaleUnit === 'mi' ? ' miles' : ' km';
