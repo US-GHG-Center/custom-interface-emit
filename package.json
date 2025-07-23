@@ -31,11 +31,6 @@
     "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
     "fix-conflicts": "prettier --write . && eslint . --fix"
   },
-  "dependencies": {
-    "@turf/bbox-polygon": "^7.2.0",
-    "@turf/boolean-intersects": "^7.2.0",
-    "@turf/length": "^7.2.0"
-  },
   "peerDependencies": {
     "@date-io/moment": "^3.0.0",
     "@emotion/react": "^11.13.3",
@@ -64,6 +59,9 @@
     "react-resizable-panels": "^2.1.1",
     "react-router-dom": "^6.27.0",
     "styled-components": "^6.1.13",
+    "@turf/bbox-polygon": "^7.2.0",
+    "@turf/boolean-intersects": "^7.2.0",
+    "@turf/length": "^7.2.0",
     "uuid": "^11.0.3",
     "web-vitals": "^5.0.1"
   },
