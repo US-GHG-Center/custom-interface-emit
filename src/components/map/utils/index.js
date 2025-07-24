@@ -1,4 +1,6 @@
-import * as turf from '@turf/turf';
+import { bboxPolygon } from '@turf/bbox-polygon';
+import { booleanIntersects } from '@turf/boolean-intersects';
+
 /**
  * Generates a unique source ID string.
  *
@@ -244,7 +246,7 @@ export const addCoveragePolygon = (
 
 export function isFeatureWithinBounds(feature, bounds) {
   // Create a bounding box feature from the map bounds
-  const boundingBox = turf?.bboxPolygon([
+  const boundingBox = bboxPolygon([
     bounds._sw.lng,
     bounds._sw.lat,
     bounds._ne.lng,
@@ -252,5 +254,5 @@ export function isFeatureWithinBounds(feature, bounds) {
   ]);
 
   // Check if the feature intersects with the bounding box
-  return turf?.booleanIntersects(feature, boundingBox);
+  return booleanIntersects(feature, boundingBox);
 }
