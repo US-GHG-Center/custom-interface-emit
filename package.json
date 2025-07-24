@@ -1,6 +1,6 @@
 {
   "name": "test01-emit",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
   "main": "dist/main.js",
@@ -65,17 +65,7 @@
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@date-io/moment": "^3.0.0",
-    "@emotion/react": "^11.13.3",
-    "@emotion/styled": "^11.13.0",
-    "@fortawesome/fontawesome-svg-core": "^6.6.0",
-    "@fortawesome/free-brands-svg-icons": "^6.6.0",
-    "@fortawesome/free-regular-svg-icons": "^6.6.0",
-    "@fortawesome/free-solid-svg-icons": "^6.6.0",
-    "@fortawesome/react-fontawesome": "^0.2.2",
-    "@mui/icons-material": "^6.1.6",
     "@mui/material": "^6.1.6",
-    "@mui/x-date-pickers": "^7.22.0",
     "@parcel/packager-raw-url": "2.15.2",
     "@parcel/packager-ts": "2.15.2",
     "@parcel/transformer-typescript-types": "2.15.2",
@@ -89,6 +79,8 @@
     "parcel": "2.15.2",
     "parcel-reporter-static-files-copy": "^1.5.3",
     "parcel-resolver-tspaths": "^0.0.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": ">=3.0.0"
   },
   "eslintConfig": {
