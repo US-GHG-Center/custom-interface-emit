@@ -1,6 +1,8 @@
 {
   "name": "emit-interface",
   "version": "0.0.1",
+  "name": "emit-interface",
+  "version": "0.0.1",
   "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
   "main": "dist/main.js",
