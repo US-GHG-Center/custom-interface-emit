@@ -20,9 +20,18 @@ You'll need the following tools installed:
 Create a copy of the `.env.local-sample` file and name it `.env`. Populate it with your specific environment variables:
 
 ```
-REACT_APP_BASE_URL='xxxxxxx'
-REACT_APP_EXCLUDED_PREFIXES='xxxxxxxx'
-REACT_APP_ENDPOINT='xxxxxxxxx'
+REACT_APP_STAC_API_URL='xxxxxxxxxx'
+REACT_APP_BASE_STAC_API_URL='xxxxxxxxxx'
+REACT_APP_RASTER_API_URL='xxxxxxxxxx'
+PUBLIC_URL='xxxxxxxxxx'
+REACT_APP_MAPBOX_TOKEN='xxxxxxxxxx'
+REACT_APP_MAPBOX_STYLE_URL='xxxxxxxxxx'
+REACT_APP_BASEMAP_STYLES_MAPBOX_ID='xxxxxxxxxx'
+REACT_APP_METADATA_ENDPOINT='xxxxxxxxxx'
+REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT='xxxxxxxxxx'
+REACT_APP_GEOAPIFY_APIKEY='xxxxxxxxxx'
+REACT_APP_COVERAGE_URL='xxxxxxxxxx'
+REACT_APP_ENV='xxxxxxxxxx'
 ```
 
 ### Installation and Running
