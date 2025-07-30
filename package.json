@@ -68,7 +68,7 @@
   },
   "devDependencies": {
     "@mui/material": "^6.1.6",
-    "@parcel/config-default": "^2.15.4",
+    "@parcel/config-default": "^2.15.2",
     "@parcel/packager-raw-url": "^2.15.2",
     "@parcel/packager-ts": "^2.15.2",
     "@parcel/transformer-typescript-types": "^2.15.2",
