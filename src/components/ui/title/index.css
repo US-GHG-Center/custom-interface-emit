@@ -28,7 +28,8 @@
   padding-bottom: 12px;
 }
 
+
+
 .title-divider {
-  border-color: var(--main-blue) !important;
-  border-width: 1px !important;
+  border: 1px solid #d0d0d0;
 }

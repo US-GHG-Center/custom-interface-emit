@@ -7,7 +7,7 @@ export const Title = ({ title, description }) => {
   return (
     <>
       <Typography
-        variant='h6'
+        variant='h5'
         component='div'
         className='title-head'
         fontWeight='bold'

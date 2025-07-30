@@ -87,7 +87,8 @@ export const DashboardContainer = ({
     let isMounted = true;
     const fetchCoverage = async () => {
       try {
-        const coverageData = await getCoverageData(config.coverageUrl);
+        const url = 'https://earth.jpl.nasa.gov/emit-mmgis-lb/API/geodatasets/get?layer=coverage&type=geojson&maxy=57.326521225217064&maxx=86.66015625000001&miny=-57.32652122521708&minx=-86.66015625000001&crsCode=3857&zoom=3&starttime=2024-08-01T00%3A00%3A00.000Z&startProp=start_time&endtime=2025-08-29T20%3A29%3A37.931Z&endProp=end_time'
+        const coverageData = await getCoverageData(url);
         if (!isMounted) return;
 
         const indexedCoverageData = createIndexedCoverageData(coverageData);
