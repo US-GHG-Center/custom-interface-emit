@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { Dashboard } from '../dashboard/index.jsx';
 import {
   fetchCollectionMetadata,
@@ -34,15 +33,9 @@ export const DashboardContainer = ({
   defaultStartDate,
 }) => {
   const { config } = useConfig();
-  const [searchParams] = useSearchParams();
   const [coverage, setCoverage] = useState();
-  const [zoomLocation, setZoomLocation] = useState(
-    searchParams.get('zoom-location') || defaultZoomLocation
-  );
-  const [zoomLevel, setZoomLevel] = useState(
-
-    searchParams.get('zoom-level') || defaultZoomLevel
-  );
+  const [zoomLocation, setZoomLocation] = useState(defaultZoomLocation);
+  const [zoomLevel, setZoomLevel] = useState(defaultZoomLevel);
   const [collectionMeta, setCollectionMeta] = useState({});
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);

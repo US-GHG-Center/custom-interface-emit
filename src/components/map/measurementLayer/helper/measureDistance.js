@@ -1,4 +1,4 @@
-import {length}  from '@turf/length';
+import { length } from '@turf/length';
 const { sourceExists, layerExists } = require('../../utils');
 
 // GeoJSON object to hold  measurement features
