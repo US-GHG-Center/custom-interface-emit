@@ -64,7 +64,7 @@ Once your environment variables are set, use the following commands:
 
 ## Bundling as a Library
 
-You can package `emit-interface` as a reusable library for distribution via the [npm registry](https://www.npmjs.com/).
+You can package `custom-interface-emit` as a reusable library for distribution via the [npm registry](https://www.npmjs.com/).
 
 ### 1. Build the Library
 
@@ -117,9 +117,9 @@ EMIT interface can also be used as a library within other React applications.
 Install the library via npm or yarn:
 
 ```bash
-npm install emit-interface
+npm install custom-interface-emit
 # or
-yarn add emit-interface
+yarn add custom-interface-emit
 ```
 
 ## Usage
@@ -127,7 +127,7 @@ yarn add emit-interface
 ### Import EMIT Interface:
 
 ```JavaScript
-import { EmitInterface } from 'emit-interface';
+import { EmitInterface } from 'custom-interface-emit';
 ```
 
 ### Create a Configuration Variable:

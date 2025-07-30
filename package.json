@@ -1,5 +1,5 @@
 {
-  "name": "emit-interface",
+  "name": "custom-interface-emit",
   "version": "0.0.1",
   "private": false,
   "description": "Standalone EMIT Methane Plume Viewer app",
