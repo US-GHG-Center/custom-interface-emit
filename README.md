@@ -152,10 +152,10 @@ const emitConfig = {
 ### Add some default map configuration to start with
 
 ```Javascript
-const defaultCollectionId = 'emit-ch4plume-v1';
-const defaultZoomLocation = [number,number];
-const defaultZoomLevel = number;
-const defaultStartDate = 'year-month-day';
+const defaultCollectionId:string = '';//collection id for emit emit-ch4plume-v1
+const defaultZoomLocation:[number,number] = [-98.771556, 32.967243];
+const defaultZoomLevel:number = 4;
+const defaultStartDate:string = 'yyyy-mm-dd';//2022-08-22
 ```
 
 ### Use the CloudBrowse Component:
