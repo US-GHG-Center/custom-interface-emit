@@ -83,11 +83,14 @@ export const DashboardContainer = ({
   }, [collectionId, defaultZoomLocation, defaultZoomLevel, defaultStartDate]);
 
   // Fetch coverage data
+  //TODO:fetch data with bounding box and dates as parameters
   useEffect(() => {
     let isMounted = true;
     const fetchCoverage = async () => {
       try {
-        const url = 'https://earth.jpl.nasa.gov/emit-mmgis-lb/API/geodatasets/get?layer=coverage&type=geojson&maxy=57.326521225217064&maxx=86.66015625000001&miny=-57.32652122521708&minx=-86.66015625000001&crsCode=3857&zoom=3&starttime=2024-08-01T00%3A00%3A00.000Z&startProp=start_time&endtime=2025-08-29T20%3A29%3A37.931Z&endProp=end_time'
+        const nowDate = new Date()
+        const endpoint = 'https://earth.jpl.nasa.gov/emit-mmgis-lb/API/geodatasets/get?layer=coverage&type=geojson&maxy=83.87025634393777&maxx=213.4849548339844&miny=-74.30066604346104&minx=-176.74942016601565&crsCode=3857&zoom=2&starttime=2022-08-10T01%3A21%3A48.895Z&startProp=start_time&endProp=end_time&endtime='
+        const url = `${endpoint}${nowDate}`
         const coverageData = await getCoverageData(url);
         if (!isMounted) return;
 
