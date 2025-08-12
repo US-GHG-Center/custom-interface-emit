@@ -53,7 +53,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
           justifyContent: 'center',
           fontFamily: "Public sans",
           fontSize: "14px",
-          color:"#808080"
+          color: "#808080"
         }}
       >
         {moment(dateRange[0]).format('ddd, DD MMM YYYY')} -{' '}
@@ -74,25 +74,26 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
             display: 'flex',
             height: '8px',
             '& .MuiSlider-track': {
-              backgroundColor: 'grey',
+              backgroundColor: '#eeeeee',
               height: '14px',
-              borderRadius: '1px',
+              borderRadius: '4px',
+              border: '1px solid #cfcfcf',
             },
             '& .MuiSlider-rail': {
               backgroundColor: '#ffffff',
               height: '14px',
               borderRadius: '3px',
-              border: '1px solid #aaaaaa',
+              border: '1px solid #808080',
             },
             '& .MuiSlider-thumb': {
               width: '22px',
               height: '26px',
-              backgroundColor: '#fffffe',
-              border: '1px solid #eeeeee',
+              backgroundColor: '#ffffff',
+              border: '1px solid #ffffff',
               borderRadius: 2,
               boxShadow: '0 0 0px rgba(0,0,0,0.2)',
               '&:hover': {
-                boxShadow: '0 0 8px rgba(0,0,0,0.3)',
+                boxShadow: '0 0 5px rgba(0,0,0,0.3)',
               },
             },
           }}
@@ -104,7 +105,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
             margin: '-4px',
             fontFamily: "Public sans",
             color: "#808080",
-            fontSize:"14px",
+            fontSize: "14px",
             justifyContent: 'space-between',
           }}
         >
