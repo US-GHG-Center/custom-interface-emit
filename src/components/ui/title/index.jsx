@@ -28,7 +28,7 @@ export const Title = ({ title, description }) => {
       <Divider
         component='div'
         className='title-divider'
-        sx={{ margin: '0 1.5rem' }}
+        sx={{ }}
       />
     </>
   );

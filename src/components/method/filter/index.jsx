@@ -51,6 +51,9 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
           marginBottom: '0px',
           display: 'flex',
           justifyContent: 'center',
+          fontFamily: "Public sans",
+          fontSize: "14px",
+          color:"#808080"
         }}
       >
         {moment(dateRange[0]).format('ddd, DD MMM YYYY')} -{' '}
@@ -71,7 +74,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
             display: 'flex',
             height: '8px',
             '& .MuiSlider-track': {
-              backgroundColor: '#082A63',
+              backgroundColor: 'grey',
               height: '14px',
               borderRadius: '1px',
             },
@@ -99,6 +102,9 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
           style={{
             display: 'flex',
             margin: '-4px',
+            fontFamily: "Public sans",
+            color: "#808080",
+            fontSize:"14px",
             justifyContent: 'space-between',
           }}
         >
