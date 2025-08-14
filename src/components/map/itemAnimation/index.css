@@ -46,7 +46,7 @@
 /* Position the label in the top row */
 .mapboxgl-ctrl-timeline__label {
   grid-area: label;
-  font-family: 'Roboto', 'Helvetica', 'Arial', 'sans-serif';
+  font-family: 'DM Sans';
   font-weight: 400;
   font-size: 0.9rem;
   color: #000000;

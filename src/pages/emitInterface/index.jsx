@@ -5,6 +5,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useSearchParams } from 'react-router-dom';
+import { ThemeProvider, CssBaseline } from '@mui/material';
+import theme from '../../../theme.js'
 
 export function EmitInterface({
   config = {},
@@ -16,14 +18,16 @@ export function EmitInterface({
   return (
     <ConfigProvider userConfig={config}>
       <CssBaseline />
-      <LocalizationProvider dateAdapter={AdapterMoment}>
-        <DashboardContainer
-          collectionId={defaultCollectionId}
-          defaultZoomLocation={defaultZoomLocation}
-          defaultZoomLevel={defaultZoomLevel}
-          defaultStartDate={defaultStartDate}
-        />
-      </LocalizationProvider>
+      <ThemeProvider theme={theme}>
+        <LocalizationProvider dateAdapter={AdapterMoment}>
+          <DashboardContainer
+            collectionId={defaultCollectionId}
+            defaultZoomLocation={defaultZoomLocation}
+            defaultZoomLevel={defaultZoomLevel}
+            defaultStartDate={defaultStartDate}
+          />
+        </LocalizationProvider>
+      </ThemeProvider>
     </ConfigProvider>
   );
 }

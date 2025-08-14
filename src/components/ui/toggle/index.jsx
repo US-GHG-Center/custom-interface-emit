@@ -33,7 +33,7 @@ export const  ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
 
   return (
     <div className='toggle-container'>
-      <Typography variant='body2' gutterBottom>
+      <Typography   sx={{ fontSize:"14px",color:"grey" }} variant='body2' gutterBottom>
         {title}
       </Typography>
       <label className='toggle-switch'>
