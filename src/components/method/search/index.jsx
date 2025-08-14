@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import { TrieSearch } from './helper/trieSearch';
+import "./index.css"
 
 /**
  * Search Component
@@ -105,8 +106,29 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
               </>
             ),
           }}
+          InputLabelProps={{
+            style: { color: 'grey !important' },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              "& fieldset": {
+                borderColor: "grey !important"
+              },
+              "&:hover fieldset": {
+                borderColor: "grey !important"
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "grey !important",
+              }
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#808080 !important", // Replace with your desired color
+            }
+          }}
         />
       )}
+
       onChange={handleOnOptionClicked}
       value={selectedOption}
     />

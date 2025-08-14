@@ -3,9 +3,9 @@
 }
 
 #colorbar {
-  position: absolute; 
-  bottom: 3%; 
-  right: 5px; 
+  position: absolute;
+  bottom: 3%;
+  right: 5px;
   height: var(--colorbar-height);
   width: 30rem;
   z-index: 10000;
@@ -28,6 +28,9 @@
 .colorbar-label {
   text-align: center;
   margin-bottom: 0px;
+  fontsize: 14px;
+  font-family: Public sans;
+  color: grey !important;
 }
 
 .colorbar-scale-tick-label-container {
@@ -36,7 +39,8 @@
 }
 
 .colorbar-scale-tick-label {
-  font-family: 'Roboto', 'Helvetica', 'Arial', 'sans-serif';
+  font-family: 'DM Sans';
   font-weight: 400;
-  font-size: 1rem;
+  font-size: 14px;
+  color: grey;
 }

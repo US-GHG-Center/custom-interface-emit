@@ -42,10 +42,11 @@ const CaptionValue = ({ caption, value, className }) => {
         variant='caption'
         component='div'
         sx={{
-          color: '#082A63',
-          fontWeight: 700,
+          color: '#808080',
+          fontWeight: 500,
           unicodeBidi: 'isolate',
-          fontSize: 13,
+          fontFamily:"Public sans",
+          fontSize: 14,
           lineHeight: 1.2,
         }}
       >
@@ -56,8 +57,8 @@ const CaptionValue = ({ caption, value, className }) => {
         variant='body2'
         component='div'
         sx={{
-          color: '#082A63',
-          fontSize: 12,
+          color: '#808080',
+          fontSize: 13,
           wordWrap: 'break-word',
           overflowWrap: 'break-word',
         }}
@@ -157,7 +158,7 @@ export const VisualizationItemCard = forwardRef(
             />
           </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column',fontFamily:"Sans", width: '100%' }}>
             <CardContent sx={{ flex: '1 0 auto' }}>
               <HorizontalLayout>
                 <CaptionValue
