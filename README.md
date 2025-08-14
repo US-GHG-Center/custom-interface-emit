@@ -138,7 +138,6 @@ const emitConfig = {
   stacApiUrl:"xxxxxxx",
   metadataEndpoint: "xxxxxxx",
   coverageUrl:"xxxxxxx",
-  baseStacApiUrl: "xxxxxxx",
   mapboxToken:"xxxxxxx",
   mapboxStyle: "xxxxxxx",
   basemapStyle: "xxxxxxx",
