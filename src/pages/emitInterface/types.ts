@@ -1,5 +1,4 @@
 export interface EmitInterfaceConfig {
-  baseStacApiUrl: string;
   metadataEndpoint: string;
   stacApiUrl: string;
   coverageUrl: string;

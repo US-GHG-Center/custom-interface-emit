@@ -51,7 +51,6 @@ jobs:
           # Check for required variables 
           [ -z "${{ vars.PUBLIC_URL }}" ] && missing_vars+=("vars.PUBLIC_URL")
           [ -z "${{ vars.REACT_APP_STAC_API_URL }}" ] && missing_vars+=("vars.REACT_APP_STAC_API_URL")
-          [ -z "${{ vars.REACT_APP_BASE_STAC_API_URL }}" ] && missing_vars+=("vars.REACT_APP_BASE_STAC_API_URL")
           [ -z "${{ vars.REACT_APP_RASTER_API_URL }}" ] && missing_vars+=("vars.REACT_APP_RASTER_API_URL")
           [ -z "${{ vars.REACT_APP_METADATA_ENDPOINT }}" ] && missing_vars+=("vars.REACT_APP_METADATA_ENDPOINT")
           [ -z "${{ vars.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT }}" ] && missing_vars+=("vars.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT")
@@ -81,7 +80,6 @@ jobs:
           REACT_APP_STAC_API_URL: ${{ vars.REACT_APP_STAC_API_URL }}
           REACT_APP_MAPBOX_STYLE_URL: ${{vars.REACT_APP_MAPBOX_STYLE_URL}}
           REACT_APP_RASTER_API_URL: ${{ vars.REACT_APP_RASTER_API_URL }}
-          REACT_APP_BASE_STAC_API_URL: ${{ vars.REACT_APP_BASE_STAC_API_URL }}
           REACT_APP_METADATA_ENDPOINT: ${{ vars.REACT_APP_METADATA_ENDPOINT }}
           REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT: ${{ vars.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT }}
           REACT_APP_COVERAGE_URL: ${{ vars.REACT_APP_COVERAGE_URL }}
