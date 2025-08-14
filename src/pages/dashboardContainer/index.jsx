@@ -48,7 +48,7 @@ export const DashboardContainer = ({
 
     const init = async () => {
       try {
-        const collectionUrl = `${config.baseStacApiUrl}/collections/${collectionId}`;
+        const collectionUrl = `${config.stacApiUrl}/collections/${collectionId}`;
         const collectionMetadata = await fetchCollectionMetadata(collectionUrl);
 
         if (!isMounted) return;
