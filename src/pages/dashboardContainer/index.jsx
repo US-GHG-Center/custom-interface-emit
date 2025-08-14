@@ -54,7 +54,8 @@ export const DashboardContainer = ({
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
         const metadata = await fetchData(config.metadataEndpoint);
-        const stacData = await fetchAllFromSTACAPI(config.stacApiUrl);
+        const url = `${config.stacApiUrl}/collections/${collectionId}/items`;
+        const stacData = await fetchAllFromSTACAPI(url);
         if (!isMounted) return;
         const { data, latestPlume } = await transformMetadata(
           metadata,
