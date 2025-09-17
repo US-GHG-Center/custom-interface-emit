@@ -16,7 +16,7 @@ import moment from 'moment';
 export function FilterByDate({ onDateChange, filterDateRange }) {
   const minDate = filterDateRange?.startDate
     ? moment(filterDateRange.startDate).valueOf()
-    : moment('2022-08-22')?.valueOf();
+    : moment('2022-08-10')?.valueOf();
   const maxDate = filterDateRange?.endDate
     ? moment(filterDateRange?.endDate).valueOf()
     : moment?.now()?.valueOf();
@@ -56,8 +56,8 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
           color: "#808080"
         }}
       >
-        {moment(dateRange[0]).format('ddd, DD MMM YYYY')} -{' '}
-        {moment(dateRange[1]).format('ddd, DD MMM YYYY')}
+        {moment(dateRange[0]).format('ddd, MMM DD YYYY')} -{' '}
+        {moment(dateRange[1]).format('ddd, MMM DD YYYY')}
       </Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Slider

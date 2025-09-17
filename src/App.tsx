@@ -8,7 +8,7 @@ const BASE_PATH = process.env.PUBLIC_URL;
 const defaultCollectionId = 'emit-ch4plume-v1';
 const defaultZoomLocation = [-98.771556, 32.967243];
 const defaultZoomLevel = 4;
-const defaultStartDate = '2022-08-22';
+const defaultStartDate = '2022-08-10';
 
 function App() {
   return (
