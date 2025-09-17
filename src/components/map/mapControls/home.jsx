@@ -18,7 +18,7 @@ const Home = ({ onClickHandler }) => {
   return (
     <Tooltip title='Reset'>
       <IconButton className='menu-open-icon' onClick={onClickHandler}>
-        <HomeIcon className='map-control-icon' />
+        <HomeIcon className='map-control-icon' sx={{ color: '#2d2d2d' }} />
       </IconButton>
     </Tooltip>
   );

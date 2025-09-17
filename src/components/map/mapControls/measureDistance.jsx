@@ -20,8 +20,8 @@ function MeasureButton({ icon: iconClicked, onClick }) {
       <IconButton
         className='measure-icon map-control-icon'
         style={{
-          backgroundColor: !iconClicked ? '' : '#808080',
-          color: !iconClicked ? '#808080' : 'white',
+          backgroundColor: !iconClicked ? '' : '#2d2d2d',
+          color: !iconClicked ? '#2d2d2d' : 'white',
         }}
         onClick={onClick}
       >

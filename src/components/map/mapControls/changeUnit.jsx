@@ -24,7 +24,7 @@ function ChangeUnitButton({ onClick, unit }) {
         style={{
           backgroundColor: '#fff',
           padding: '6px',
-          color:'#808080'
+          color:'#2d2d2d'
         }}
       >
         {unit}
