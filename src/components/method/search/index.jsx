@@ -24,16 +24,16 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
    * Creates searchable keys in the format:
    * `Plume ID: region_state_country_plumeID`
    */
+  console.log({ vizItems })
   const ids = vizItems?.map((vizItem) => {
-    const id = vizItem?.id;
+    const id = vizItem?.plumeProperties?.plumeId;
     const location = vizItem?.plumeProperties?.location;
-    const idString = id.split('_').join('-');
     const locationString = location
       ?.split(',')
       .reverse()
       .map((part) => part.trim())
       .join('_');
-    return `${locationString}_${idString}`;
+    return `${id} (${locationString})`;
   });
 
   const trieSearch = useRef(null);
