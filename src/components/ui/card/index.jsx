@@ -45,7 +45,7 @@ const CaptionValue = ({ caption, value, className }) => {
           color: '#808080',
           fontWeight: 500,
           unicodeBidi: 'isolate',
-          fontFamily:"Public sans",
+          fontFamily: "Public sans",
           fontSize: 14,
           lineHeight: 1.2,
         }}
@@ -158,7 +158,7 @@ export const VisualizationItemCard = forwardRef(
             />
           </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column',fontFamily:"Sans", width: '100%' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: "Sans", width: '100%' }}>
             <CardContent sx={{ flex: '1 0 auto' }}>
               <HorizontalLayout>
                 <CaptionValue
@@ -192,7 +192,7 @@ export const VisualizationItemCard = forwardRef(
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Location'
+                  caption='Location:'
                   value={location}
                 />
                 <CaptionValue
@@ -216,14 +216,15 @@ export const VisualizationItemCard = forwardRef(
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Longitude (Max Conc):'
-                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
-                />
-                <CaptionValue
-                  className='card-plume'
                   caption='Latitude (Max Conc):'
                   value={Number(latitudeOfMaxConcentration).toFixed(3)}
                 />
+                <CaptionValue
+                  className='card-plume'
+                  caption='Longitude (Max Conc):'
+                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
+                />
+
               </HorizontalLayout>
             </CardContent>
           </Box>
