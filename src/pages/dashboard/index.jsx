@@ -294,7 +294,7 @@ export function Dashboard({
       </div>
       {VMAX && (
         <ColorBar
-          label={'Methane Column Enhancement (ppm m)'}
+          label={'Methane Enhancement (ppm m)'}
           VMAX={VMAX}
           VMIN={VMIN}
           colormap={colormap}
