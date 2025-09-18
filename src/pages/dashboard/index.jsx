@@ -31,7 +31,7 @@ const TITLE = 'EMIT Methane Plume Viewer';
 const DESCRIPTION =
   'Using a special technique, the EMIT hyperspectral data\
    is used to visualize large methane plumes whenever the instrument \
-   observes the surface. Due variations of the International Space Station orbit,\
+   observes the surface. Due to variations of the International Space Station orbit,\
    EMIT does not have a regular observation repeat cycle.';
 const HorizontalLayout = styled.div`
   width: 90%;
