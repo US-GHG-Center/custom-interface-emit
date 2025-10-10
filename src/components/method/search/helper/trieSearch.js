@@ -1,6 +1,5 @@
 import { TrieTree } from './trieTree';
 
-
 /**
  * TrieSearch
  *
@@ -17,29 +16,46 @@ export class TrieSearch {
     if (!items || !items.length) {
       return;
     }
+    console.log({ items });
     // add items to the tire tree
     items.forEach((item) => {
-      // here item is in the format <country>_<state>_<region>_<plume_id>. e.g. Mexico_Durango_BV1_BV1-1
+      // here item is in the format CH4_PlumeComplex-<plume_id> <country>_<state>_<region>. e.g. "CH4_PlumeComplex-931 (United States_California_Valencia)"
+      const original = String(item);
       const capitalizedItem = item.toUpperCase();
 
+      this.trieTree.insert(capitalizedItem, original);
       // Algorithm:
       // basically we want to create tire tree for, all of these
-      // <country>_<state>_<region>_<plume_id></plume_id>
-      // <state>_<region>_<plume_id></plume_id>
-      // <region>_<plume_id></plume_id>
-      // <plume_id></plume_id>
-      // </plume_id>
+      // <plume_id> <country>_<state>_<region>
+      // <country>_<state>_<region>
+      // <state>_<region>
+      // <region>
+      // <plume_id>
 
-      // sliding window with fixed end and moving start. start jumping to next _
-      let start = 0;
-      let end = capitalizedItem.length - 1;
-      this.trieTree.insert(capitalizedItem, item);
-      while (start < end) {
-        if (capitalizedItem[start] === '_') {
-          let word = capitalizedItem.slice(start + 1, end + 1);
-          this.trieTree.insert(word, item);
+      //extract id from string
+      const idMatch = original.match(/(\d+)(?!.*\d)/);
+      if (idMatch) {
+        const idToken = idMatch[0].toUpperCase();
+        this.trieTree.insert(idToken, original);
+      }
+
+      // extract location inside parentheses if present
+      const parenMatch = original.match(/\(([^)]+)\)/);
+      if (parenMatch) {
+        const locationRaw = parenMatch[1].trim(); // e.g. "United States California Valencia"
+        const locationNormalized = locationRaw.toUpperCase();
+
+        // Insert the full location string
+        if (locationNormalized) {
+          this.trieTree.insert(locationNormalized, original);
         }
-        start += 1;
+
+        // Insert individual tokens (split on non-word chars) so "United" or  "States" or "California" or " Valencia" match
+        const locTokens = locationNormalized
+          .split(/[^A-Z0-9]+/)
+          .filter(Boolean);
+        locTokens.forEach((tok) => this.trieTree.insert(tok, original));
+
       }
     });
   }
