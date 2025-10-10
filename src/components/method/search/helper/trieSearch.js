@@ -18,8 +18,19 @@ export class TrieSearch {
       return;
     }
     // add items to the tire tree
-    items.forEach((item) => {
+    items.forEach((option) => {
+      if (!option) return;
       // here item is in the format CH4_PlumeComplex-<plume_id> <country>_<state>_<region>. e.g. "CH4_PlumeComplex-931 (United States_California_Valencia)"
+      const v =
+        typeof option === 'string'
+          ? { id: option, value: option } //fallback id==value
+          : {
+              id: String(option.id ?? '').trim(),
+              value: String(option.value ?? '').trim(),
+            };
+
+      const item = v.value || v?.id || '';
+      if (!item) return;
       const original = String(item);
       const capitalizedItem = item.toUpperCase();
 
@@ -38,11 +49,9 @@ export class TrieSearch {
         const key = String(s).trim().toUpperCase();
         if (!key || inserted.has(key)) return;
         inserted.add(key);
-        this.trieTree.insert(key, original);
+        this.trieTree.insert(key, option);
       };
-
       insertOnce(capitalizedItem);
-
       //extract id from string
       const idMatch = original.match(/(\d+)(?!.*\d)/);
       if (idMatch) {
@@ -77,12 +86,18 @@ export class TrieSearch {
   }
 
   getRecommendations(prefix) {
-    if (!prefix) {
-      return [];
+    if (!prefix) return [];
+    const up = String(prefix).toUpperCase();
+    const results = this.trieTree.search(up) || [];
+
+    // Deduplicate results based on the payload's unique ID
+    const seen = new Map();
+    for (const p of results) {
+      if (p && p.id && !seen.has(p.id)) {
+        seen.set(p.id, p);
+      }
     }
-    prefix = prefix.toUpperCase();
-    // return all recommendations
-    const results = this.trieTree.search(prefix);
-    return [...new Set(results)];
+    return Array.from(seen.values());
+    s;
   }
 }
