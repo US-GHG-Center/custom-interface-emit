@@ -18,6 +18,7 @@ const HorizontalLayout = styled.div`
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 5px;
+  overflow: auto;
 `;
 
 const HighlightableCard = styled(Card)`
@@ -129,9 +130,9 @@ export const VisualizationItemCard = forwardRef(
       if (hoveredVizItemId !== vizItemSourceId) setIsHovered(false);
     }, [hoveredVizItemId, vizItemSourceId]);
     return (
-      <div ref={ref}>
+      <div style={{ width: "100%", maxWidth: "96%" }} ref={ref}>
         <HighlightableCard
-          sx={{ display: 'flex', flex: '0 0 auto', margin: '15px' }}
+          sx={{ display: 'flex', flex: '0 0 auto', margin: '15px', width: "100%" }}
           onClick={handleCardClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -142,6 +143,7 @@ export const VisualizationItemCard = forwardRef(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              width: "100%"
             }}
           >
             <CardMedia
@@ -159,7 +161,7 @@ export const VisualizationItemCard = forwardRef(
           </div>
 
           <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: "Sans", width: '100%' }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
+            <CardContent sx={{ flex: '1 0 auto', width: "100%", overflow: "hidden", maxWidth: "100%" }}>
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
