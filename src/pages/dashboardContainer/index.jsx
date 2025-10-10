@@ -12,6 +12,7 @@ import {
 } from '../../utils/dataTransform.ts';
 
 import { useConfig } from '../../context/configContext/index.jsx';
+import metadata from "./combined_plume_metadata.json"
 
 /**
  * DashboardContainer Component
@@ -53,7 +54,7 @@ export const DashboardContainer = ({
 
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
-        const metadata = await fetchData(config.metadataEndpoint);
+        // const metadata = await fetchData(config.metadataEndpoint);
         const url = `${config.stacApiUrl}/collections/${collectionId}/items`;
         const stacData = await fetchAllFromSTACAPI(url);
         if (!isMounted) return;
@@ -101,7 +102,8 @@ export const DashboardContainer = ({
           setCoverage(indexedCoverageData);
         }
       } catch (error) {
-        console.error('Error fetching coverage data:', error);
+        // console.error('Error fetching coverage data:', error);
+        setCoverage([])
       }
     };
 
