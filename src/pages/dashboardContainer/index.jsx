@@ -12,7 +12,6 @@ import {
 } from '../../utils/dataTransform.ts';
 
 import { useConfig } from '../../context/configContext/index.jsx';
-import fallbackMetadata from "./combined_plume_metadata.json"
 
 /**
  * DashboardContainer Component
@@ -55,8 +54,8 @@ export const DashboardContainer = ({
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
         let metadata = await fetchData(config.metadataEndpoint);
-        if (!metadata || !metadata.features) {
-          metadata = fallbackMetadata
+        if (!metadata || !metadata.features.length) {
+          metadata = await fetchData(config.fallbackMetadataEndpoint);
         }
         const url = `${config.stacApiUrl}/collections/${collectionId}/items`;
         const stacData = await fetchAllFromSTACAPI(url);
@@ -97,7 +96,10 @@ export const DashboardContainer = ({
         const formattedDate = now.toISOString();
         const endpoint = `${config?.coverageUrl}?layer=coverage&type=geojson&maxy=83.87025634393777&maxx=213.4849548339844&miny=-74.30066604346104&minx=-176.74942016601565&crsCode=3857&zoom=2&starttime=2022-08-10T01%3A21%3A48.895Z&startProp=start_time&endProp=end_time`
         const url = `${endpoint}&endtime=${formattedDate}`
-        const coverageData = await getCoverageData(url);
+        let coverageData = await getCoverageData(url);
+        if (!coverageData || !coverageData.features.length) {
+          coverageData = await getCoverageData(config.fallbackCoverageEndpoint)
+        }
         if (!isMounted) return;
 
         const indexedCoverageData = createIndexedCoverageData(coverageData);
