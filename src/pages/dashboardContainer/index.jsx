@@ -12,7 +12,7 @@ import {
 } from '../../utils/dataTransform.ts';
 
 import { useConfig } from '../../context/configContext/index.jsx';
-import metadata from "./combined_plume_metadata.json"
+import fallbackMetadata from "./combined_plume_metadata.json"
 
 /**
  * DashboardContainer Component
@@ -54,7 +54,10 @@ export const DashboardContainer = ({
 
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
-        // const metadata = await fetchData(config.metadataEndpoint);
+        let metadata = await fetchData(config.metadataEndpoint);
+        if (!metadata || !metadata.features) {
+          metadata = fallbackMetadata
+        }
         const url = `${config.stacApiUrl}/collections/${collectionId}/items`;
         const stacData = await fetchAllFromSTACAPI(url);
         if (!isMounted) return;
