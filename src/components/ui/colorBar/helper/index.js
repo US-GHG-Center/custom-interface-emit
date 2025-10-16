@@ -61,9 +61,22 @@ export const createColorbar = (colorbar, VMIN, VMAX, STEP, colormap) => {
 
 function generateScale(min, max, step) {
   const numbers = [];
+
+  const roundingBase =
+    step > 0 ? Math.pow(10, Math.floor(Math.log10(step))) : 1;
+
   for (let i = min; i <= max; i += step) {
-    numbers.push(i);
+    // Round the calculated tick value to the determined base
+    const roundedValue = Math.round(i / roundingBase) * roundingBase;
+    numbers.push(roundedValue);
   }
-  numbers[numbers.length - 1] += '+';
-  return numbers;
+
+  // Filter out duplicate values that might result from rounding
+  const uniqueNumbers = [...new Set(numbers)];
+
+  if (uniqueNumbers.length > 0) {
+    uniqueNumbers[uniqueNumbers.length - 1] += '+';
+  }
+  return uniqueNumbers;
 }
+

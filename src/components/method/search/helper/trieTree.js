@@ -2,7 +2,7 @@ class TrieNode {
   constructor() {
     this.children = {};
     this.isCompleteWord = false;
-    this.word = null;
+    this.payloads = [];
   }
 }
 
@@ -11,7 +11,7 @@ export class TrieTree {
     this.tireRoot = new TrieNode();
   }
 
-  insert = (word, alternateWord) => {
+  insert = (word, payload) => {
     let node = this.tireRoot;
     for (let i = 0; i < word.length; i++) {
       let letter = word[i];
@@ -21,10 +21,8 @@ export class TrieTree {
       node = node.children[letter];
     }
     node.isCompleteWord = true;
-    if (alternateWord) {
-      node.word = alternateWord;
-    } else {
-      node.word = word;
+    if (!node.payloads.some((p) => p.id === payload.id)) {
+      node.payloads.push(payload);
     }
   };
 
@@ -40,22 +38,18 @@ export class TrieTree {
     // now based off that node, do a dfs and then get all the complete word.
     let result = [];
 
-    const dfs = (node) => {
-      if (!node) {
+    const dfs = (currentNode) => {
+      if (!currentNode) {
         return;
       }
 
-      let { isCompleteWord, word } = node;
-
-      if (isCompleteWord) {
-        result.push(word);
+      if (currentNode.isCompleteWord) {
+        result.push(...currentNode.payloads);
       }
 
-      // get the children
-      let children = Object.keys(node.children);
-      children.forEach((child) => {
-        dfs(node.children[child]);
-      });
+      for (const child in currentNode.children) {
+        dfs(currentNode.children[child]);
+      }
     };
 
     dfs(node);

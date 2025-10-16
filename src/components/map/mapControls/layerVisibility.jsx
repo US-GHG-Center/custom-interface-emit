@@ -52,12 +52,12 @@ function VisibilityIconComp({ map, onClickHandler }) {
   };
 
   return (
-    <Tooltip title='Layer Visibility'>
+    <Tooltip title='Show/Hide Layers'>
       <IconButton className='menu-open-icon' onClick={toggleLayers}>
         {isVisible ? (
-          <VisibilityIcon className='map-control-icon' />
+          <VisibilityIcon className='map-control-icon' sx={{ color: '#2d2d2d' }} />
         ) : (
-          <VisibilityOffIcon className='map-control-icon' />
+          <VisibilityOffIcon className='map-control-icon' sx={{ color: '#2d2d2d' }} />
         )}
       </IconButton>
     </Tooltip>

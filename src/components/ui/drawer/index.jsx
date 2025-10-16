@@ -153,25 +153,27 @@ export function PersistentDrawerRight({
             </Typography>
           </HorizontalLayout>
         </DrawerHeader>
-        {selectedVizItems?.length ? (
-          selectedVizItems?.map((selectedVizItem) => (
-            <VisualizationItemCard
-              key={selectedVizItem?.id}
-              ref={
-                selectedVizItem?.id === hoveredVizLayerId
-                  ? highlightedCardRef
-                  : null
-              }
-              vizItem={selectedVizItem}
-              collectionId={collectionId}
-              onSelectVizLayer={onSelectVizLayer}
-              hoveredVizItemId={hoveredVizLayerId}
-              onHoverOnVizLayer={onHoverOnVizLayer}
-            />
-          ))
-        ) : (
-          <></>
-        )}
+        <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+          {selectedVizItems?.length ? (
+            selectedVizItems?.map((selectedVizItem) => (
+              <VisualizationItemCard
+                key={selectedVizItem?.id}
+                ref={
+                  selectedVizItem?.id === hoveredVizLayerId
+                    ? highlightedCardRef
+                    : null
+                }
+                vizItem={selectedVizItem}
+                collectionId={collectionId}
+                onSelectVizLayer={onSelectVizLayer}
+                hoveredVizItemId={hoveredVizLayerId}
+                onHoverOnVizLayer={onHoverOnVizLayer}
+              />
+            ))
+          ) : (
+            <></>
+          )}
+        </Box>
       </Drawer>
     </Box>
   );

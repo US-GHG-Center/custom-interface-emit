@@ -8,6 +8,8 @@ export interface EmitInterfaceConfig {
   rasterApiUrl: string;
   geoApifyKey: string;
   latlonEndpoint: string;
+  fallbackMetadataEndpoint: string;
+  fallbackCoverageEndpoint: string;
 }
 
 export interface EmitInterfaceProps {

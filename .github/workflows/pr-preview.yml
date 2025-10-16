@@ -51,6 +51,8 @@ jobs:
           [ -z "${{ vars.REACT_APP_COVERAGE_URL }}" ] && missing_vars+=("vars.REACT_APP_COVERAGE_URL")
           [ -z "${{ vars.DEPLOYMENT_BUCKET }}" ] && missing_vars+=("vars.DEPLOYMENT_BUCKET")
           [ -z "${{ vars.DEPLOYMENT_REGION }}" ] && missing_vars+=("vars.DEPLOYMENT_REGION")
+          [ -z "${{ vars.REACT_APP_FALLBACK_METADATA_ENDPOINT }}" ] && missing_vars+=("vars.REACT_APP_FALLBACK_METADATA_ENDPOINT")
+          [ -z "${{ vars.REACT_APP_FALLBACK_COVERAGE_ENDPOINT }}" ] && missing_vars+=("vars.REACT_APP_FALLBACK_COVERAGE_ENDPOINT")
           [ -z "${{ secrets.REACT_APP_BASEMAP_STYLES_MAPBOX_ID }}" ] && missing_vars+=("secrets.REACT_APP_BASEMAP_STYLES_MAPBOX_ID")
           [ -z "${{ secrets.REACT_APP_GEOAPIFY_APIKEY }}" ] && missing_vars+=("secrets.REACT_APP_GEOAPIFY_APIKEY")
           [ -z "${{ secrets.REACT_APP_MAPBOX_TOKEN }}" ] && missing_vars+=("secrets.REACT_APP_MAPBOX_TOKEN")
@@ -85,6 +87,8 @@ jobs:
           REACT_APP_COVERAGE_URL: ${{ vars.REACT_APP_COVERAGE_URL }}
           DEPLOYMENT_BUCKET: ${{ vars.DEPLOYMENT_BUCKET }}
           DEPLOYMENT_REGION: ${{vars.DEPLOYMENT_REGION}}
+          REACT_APP_FALLBACK_METADATA_ENDPOINT: ${{vars.REACT_APP_FALLBACK_METADATA_ENDPOINT}}
+          REACT_APP_FALLBACK_COVERAGE_ENDPOINT: ${{vars.REACT_APP_FALLBACK_COVERAGE_ENDPOINT}}
         run: |
           yarn
           CI=false  yarn build

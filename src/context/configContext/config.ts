@@ -14,6 +14,8 @@ const defaultConfig: EmitInterfaceConfig = {
   geoApifyKey: process.env.REACT_APP_GEOAPIFY_APIKEY || '',
   latlonEndpoint: process.env.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT || '',
   rasterApiUrl: process.env.REACT_APP_RASTER_API_URL || '',
+  fallbackMetadataEndpoint: process.env.REACT_APP_FALLBACK_METADATA_ENDPOINT || '',
+  fallbackCoverageEndpoint:process.env.REACT_APP_FALLBACK_COVERAGE_ENDPOINT || '',
 };
 
 /**

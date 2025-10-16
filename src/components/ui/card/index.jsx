@@ -13,11 +13,13 @@ import { useConfig } from '../../../context/configContext';
 
 const HorizontalLayout = styled.div`
   width: 100%;
+  max-width:92%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 5px;
+  overflow: auto;
 `;
 
 const HighlightableCard = styled(Card)`
@@ -45,7 +47,7 @@ const CaptionValue = ({ caption, value, className }) => {
           color: '#808080',
           fontWeight: 500,
           unicodeBidi: 'isolate',
-          fontFamily:"Public sans",
+          fontFamily: "Public sans",
           fontSize: 14,
           lineHeight: 1.2,
         }}
@@ -129,9 +131,9 @@ export const VisualizationItemCard = forwardRef(
       if (hoveredVizItemId !== vizItemSourceId) setIsHovered(false);
     }, [hoveredVizItemId, vizItemSourceId]);
     return (
-      <div ref={ref}>
+      <div style={{ width: "100%", maxWidth: "96%" }} ref={ref}>
         <HighlightableCard
-          sx={{ display: 'flex', flex: '0 0 auto', margin: '15px' }}
+          sx={{ display: 'flex', flex: '0 0 auto', margin: '15px', width: "100%" }}
           onClick={handleCardClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
@@ -142,6 +144,7 @@ export const VisualizationItemCard = forwardRef(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              width: "100%"
             }}
           >
             <CardMedia
@@ -158,8 +161,8 @@ export const VisualizationItemCard = forwardRef(
             />
           </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column',fontFamily:"Sans", width: '100%' }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', fontFamily: "Sans", width: '100%' }}>
+            <CardContent sx={{ flex: '1 0 auto', width: "100%", overflow: "hidden", maxWidth: "100%" }}>
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
@@ -192,7 +195,7 @@ export const VisualizationItemCard = forwardRef(
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Location'
+                  caption='Location:'
                   value={location}
                 />
                 <CaptionValue
@@ -216,14 +219,15 @@ export const VisualizationItemCard = forwardRef(
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Longitude (Max Conc):'
-                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
-                />
-                <CaptionValue
-                  className='card-plume'
                   caption='Latitude (Max Conc):'
                   value={Number(latitudeOfMaxConcentration).toFixed(3)}
                 />
+                <CaptionValue
+                  className='card-plume'
+                  caption='Longitude (Max Conc):'
+                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
+                />
+
               </HorizontalLayout>
             </CardContent>
           </Box>
