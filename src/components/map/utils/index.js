@@ -52,7 +52,7 @@ export const addSourceLayerToMap = (
   const collection = feature.collection; // feature.collection
   let itemId = feature.id;
   const TILE_URL =
-    `${rasterApiUrl}/collections/${collection}/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?item=` +
+    `${rasterApiUrl}/collections/${collection}/tiles/WebMercatorQuad/{z}/{x}/{y}@1x?ids=` +
     itemId +
     '&assets=' +
     assets +
