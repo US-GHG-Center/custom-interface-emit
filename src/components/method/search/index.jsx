@@ -117,7 +117,7 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
             ),
           }}
           InputLabelProps={{
-            style: { color: 'grey !important' },
+            style: { color: 'grey !important', fontSize: '13px' },
           }}
           sx={{
             "& .MuiOutlinedInput-root": {
