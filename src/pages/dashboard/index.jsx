@@ -75,7 +75,7 @@ export function Dashboard({
   setZoomLevel,
   collectionId,
   loadingData,
-  isEmbeded,
+  isEmbedded,
 }) {
   // states for data
   const [vizItems, setVizItems] = useState([]); // store all available visualization items
@@ -89,9 +89,20 @@ export function Dashboard({
   const [enableToggle, setEnableToggle] = useState(false);
   const [fromSearch, setFromSearch] = useState(false);
 
-  // states for components/controls
-  const [openDrawer, setOpenDrawer] = useState(false);
+  // state for displaying colorbar legend
   const [showLegend, setShowLegend] = useState(true);
+
+  // state for right drawer
+  const [internalOpenDrawer, setInternalOpenDrawer] = useState(false);
+  const openDrawer = isEmbedded ? false : internalOpenDrawer;
+  //  set drawer to open only when it is not embeded
+  const setOpenDrawer = useCallback((isOpen) => {
+    if (isOpen && (isEmbedded || !visualizationLayers?.length)) {
+      return;
+    }
+    setInternalOpenDrawer(isOpen);
+  }, [isEmbedded, visualizationLayers]);
+
 
   const { config } = useConfig();
 
@@ -101,7 +112,7 @@ export function Dashboard({
   const [colormap, setColormap] = useState('plasma');
   const [assets, setAssets] = useState('ch4-plume-emissions');
 
-  const expandAccordion = isEmbeded ? false : true;
+  const expandAccordion = isEmbedded ? false : true;
 
   // handler functions
   const handleSelectedVizItem = (vizItemId) => {

@@ -44,7 +44,7 @@ export const DashboardContainer = ({
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   const [filterDateRange, setFilterDateRange] = useState({});
-  const isEmbeded = searchParams.get('embeded') === 'true' || false;
+  const isEmbedded = searchParams.get('embed') === 'true' || false;
 
   // Fetch collection metadata and plumes data
   useEffect(() => {
@@ -135,7 +135,7 @@ export const DashboardContainer = ({
       filterDateRange={filterDateRange}
       collectionId={collectionId}
       loadingData={loadingData}
-      isEmbeded={isEmbeded}
+      isEmbedded={isEmbedded}
     />
   );
 };
