@@ -1,16 +1,17 @@
 :root {
-  --colorbar-height: 7rem; /* Adjust this value to match your d2 height */
+  --colorbar-height: 5rem; /* Adjust this value to match your d2 height */
 }
 
 #colorbar {
   position: absolute;
-  bottom: 3%;
+  bottom: 5px;
   right: 5px;
   height: var(--colorbar-height);
-  width: 30rem;
+  width: 25vw;
+  min-width: 300px;
   z-index: 10000;
   background-color: white;
-  padding: 1rem;
+  padding: 0.75rem;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -18,18 +19,19 @@
 
 .colorbar-svg {
   height: 1rem;
-  width: 28rem; /* this will define the colorbar width, make it a bit small than container */
+  width: 100%; /* Dynamic width - scales with container */
 }
 
 .colorbar-scale {
   text-align: center;
+  width: 100%;
 }
 
 .colorbar-label {
   text-align: center;
   margin-bottom: 0px;
-  fontsize: 14px;
-  font-family: Public sans;
+  font-size: 14px;
+  font-family: 'Public Sans';
   color: grey !important;
 }
 
