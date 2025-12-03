@@ -92,6 +92,24 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
         if (typeof option === 'string' || typeof value === 'string') return option === value
         return option.id === value.id && option.value === value.value
       }}
+      componentsProps={{
+        popper: {
+          style: { zIndex: 1002 }
+        },
+        paper: {
+          sx: {
+            backgroundColor: '#FFFFFF',
+            color: 'grey',
+            fontSize: '13px',
+            '& .MuiAutocomplete-option': {
+              fontSize: '13px',
+              minHeight: 'auto',
+              padding: '4px 8px',
+              color: 'grey'
+            }
+          }
+        }
+      }}
       style={{ width: '100%' }}
       renderInput={(params) => (
         <TextField
@@ -109,7 +127,11 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
             ...params.InputProps,
             endAdornment: (
               <>
-                <InputAdornment position='end'>
+                <InputAdornment
+                  position='end'
+                  sx={{
+                    color: 'grey !important',
+                  }}>
                   <SearchIcon />
                 </InputAdornment>
                 {params.InputProps.endAdornment}
@@ -121,6 +143,7 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
           }}
           sx={{
             "& .MuiOutlinedInput-root": {
+              fontSize: "13px",
               "& fieldset": {
                 borderColor: "grey !important"
               },

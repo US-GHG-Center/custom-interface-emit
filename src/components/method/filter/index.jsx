@@ -102,7 +102,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
         <div
           style={{
             display: 'flex',
-            margin: '-4px',
+            margin: '2px',
             fontFamily: "Public sans",
             color: "#808080",
             fontSize: "14px",
@@ -116,6 +116,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
               marginBottom: '0px',
               display: 'flex',
               justifyContent: 'center',
+              fontSize: "12px",
             }}
           >
             Start Date
@@ -128,6 +129,7 @@ export function FilterByDate({ onDateChange, filterDateRange }) {
 
               display: 'flex',
               justifyContent: 'center',
+              fontSize: "12px",
             }}
           >
             End Date
