@@ -10,7 +10,7 @@ import {
   sourceExists,
 } from '../utils';
 
-import 'mapboxgl-timeline/dist/style.css';
+import 'mapboxgl-timeline/dist/mapboxgl-timeline.css';
 import './index.css';
 /*
       Animation component for the visualization layers
