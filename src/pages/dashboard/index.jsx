@@ -247,6 +247,7 @@ export function Dashboard({
                   component='div'
                   fontWeight='bold'
                   color='var(--main-grey)'
+                  className='accordion-title'
                   sx={{ padding: '0 10px' }}
                 >
                   {TITLE}

@@ -80,4 +80,12 @@ button.menu-open-icon {
   max-width: 400px;
   min-width: 200px;
   z-index: 10001;
+  container-type: inline-size;
+  container-name: title-container;
+}
+
+@container title-container (width < 215px) {
+  .accordion-title {
+    font-size: 1rem !important;
+  }
 }
