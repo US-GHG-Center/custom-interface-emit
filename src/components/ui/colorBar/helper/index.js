@@ -31,17 +31,23 @@ export const createColorbar = (colorbar, VMIN, VMAX, STEP, colormap) => {
     .scaleSequential(COLOR_MAP[colormap])
     .domain([VMIN, VMAX]); // Set VMIN and VMAX as your desired min and max values
 
+  const numSegments = 100;
+  const segmentData = d3.range(VMIN, VMAX, (VMAX - VMIN) / numSegments);
+  const segmentWidthPercent = 100 / numSegments; // Each segment as percentage
+
   colorbar
     .append('svg')
     .attr('class', 'colorbar-svg')
+    .attr('preserveAspectRatio', 'none')
+    .attr('viewBox', '0 0 100 12')
     .append('g')
     .selectAll('rect')
-    .data(d3.range(VMIN, VMAX, (VMAX - VMIN) / 100)) // Adjust the number of color segments as needed
+    .data(segmentData)
     .enter()
     .append('rect')
-    .attr('height', 12) // height of the svg color segment portion
-    .attr('width', '100%') // Adjust the width of each color segment
-    .attr('x', (d, i) => i * 3)
+    .attr('height', 12)
+    .attr('width', '100%')
+    .attr('x', (_, i) => i * segmentWidthPercent)
     .attr('fill', (d) => colorScale(d));
 
   // Define custom scale labels
