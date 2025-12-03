@@ -29,7 +29,7 @@ const HighlightableCard = styled(Card)`
   }
   border: ${(props) =>
     //eslint-disable-next-line prettier/prettier
-    props.$isHovered ? '1px solid blue' : '1px solid transparent'};
+    props.$isHovered ? '1px solid #4866ff' : '1px solid transparent'};
   box-shadow: ${(props) =>
     //eslint-disable-next-line prettier/prettier
     props.$isHovered ? '0 4px 20px rgba(0, 0, 0, 0.2)' : 'none'};
