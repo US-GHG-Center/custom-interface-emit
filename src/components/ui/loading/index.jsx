@@ -1,8 +1,8 @@
 import { Oval } from 'react-loader-spinner';
 
 export function LoadingSpinner() {
-  let loadingColor = '#082A63';
-  let loadingBackgroundColor = '#2C3E50';
+  let loadingColor = 'var(--ghg-indigo)';
+  let loadingBackgroundColor = 'var(--light-grey)';
   return (
     <Oval
       color={loadingColor}
