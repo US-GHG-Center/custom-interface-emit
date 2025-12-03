@@ -90,6 +90,7 @@ export function Dashboard({
 
   // states for components/controls
   const [openDrawer, setOpenDrawer] = useState(false);
+  const [showLegend, setShowLegend] = useState(true);
 
   const { config } = useConfig();
 
@@ -110,6 +111,7 @@ export function Dashboard({
     setZoomLocation([lon, lat]);
     setZoomLevel(RASTER_ZOOM_LEVEL); // take the default zoom level
     setOpenDrawer(true);
+    setShowLegend(true);
   };
 
   const handleClickedVizLayer = (vizLayerId) => {
@@ -134,6 +136,7 @@ export function Dashboard({
     setZoomLocation(location);
     setZoomLevel(RASTER_ZOOM_LEVEL);
     setOpenDrawer(true);
+    setShowLegend(true);
   };
   const filterVizItems = (dateRange, vizItems) => {
     const allVizItems = Object.keys(vizItems)?.map((key) => vizItems[key]);
@@ -153,6 +156,7 @@ export function Dashboard({
     setFromSearch(false);
     setVisualizationLayers([]);
     setOpenDrawer(false);
+    setShowLegend(false);
     setZoomLevel(4);
     setZoomLocation([-98.771556, 32.967243]);
   };
@@ -187,8 +191,10 @@ export function Dashboard({
   useEffect(() => {
     if (visualizationLayers?.length) {
       setOpenDrawer(true);
+      setShowLegend(true);
     } else {
       setOpenDrawer(false);
+      setShowLegend(false);
     }
   }, [JSON.stringify(visualizationLayers)]);
 
@@ -343,7 +349,7 @@ export function Dashboard({
         />
         )
       </div>
-      {VMAX && (
+      {VMAX && showLegend && (
         <ColorBar
           label={'Methane Enhancement (ppm m)'}
           VMAX={VMAX}
