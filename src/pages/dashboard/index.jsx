@@ -75,6 +75,7 @@ export function Dashboard({
   setZoomLevel,
   collectionId,
   loadingData,
+  isEmbeded,
 }) {
   // states for data
   const [vizItems, setVizItems] = useState([]); // store all available visualization items
@@ -99,6 +100,8 @@ export function Dashboard({
   const [VMIN, setVMIN] = useState(-92);
   const [colormap, setColormap] = useState('plasma');
   const [assets, setAssets] = useState('ch4-plume-emissions');
+
+  const expandAccordion = isEmbeded ? false : true;
 
   // handler functions
   const handleSelectedVizItem = (vizItemId) => {
@@ -220,7 +223,10 @@ export function Dashboard({
       <div id='dashboard-map-container'>
         <MainMap>
           <div className='dashboard-title-container'>
-            <Accordion sx={{ position: 'relative', zIndex: 1 }}>
+            <Accordion
+              sx={{ position: 'relative', zIndex: 1 }}
+              defaultExpanded={expandAccordion}
+            >
               <AccordionSummary
                 expandIcon={<ExpandMoreIcon />}
                 sx={{
