@@ -31,17 +31,19 @@ import moment from 'moment';
 import { useConfig } from '../../context/configContext';
 
 const TITLE = 'EMIT Methane Plume Viewer';
+
 const DESCRIPTION =
   'Using a special technique, the EMIT hyperspectral data\
    is used to visualize large methane plumes whenever the instrument \
    observes the surface. Due to variations of the International Space Station orbit,\
    EMIT does not have a regular observation repeat cycle.';
+
 const HorizontalLayout = styled.div`
   width: 90%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 12px;
+  margin: 12px 12px 0 12px;
 `;
 
 /**
@@ -239,7 +241,14 @@ export function Dashboard({
                 </Typography>
               </AccordionSummary>
               <AccordionDetails
-                sx={{ margin: '0 12px', padding: '0', maxHeight: '70vh', overflowY: 'auto', position: 'relative', zIndex: 1 }}
+                sx={{
+                  margin: '0 12px',
+                  padding: '0 0 20px 0',
+                  maxHeight: '70vh',
+                  overflowY: 'auto',
+                  position: 'relative',
+                  zIndex: 1
+                }}
               >
                 {DESCRIPTION && (
                   <Typography

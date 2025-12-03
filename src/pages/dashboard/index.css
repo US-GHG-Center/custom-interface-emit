@@ -40,6 +40,7 @@
   border-radius: 5px;
   z-index: 1000;
 }
+
 .map-icon {
   color: #ffffff;
 }
@@ -50,6 +51,7 @@ button.measure-icon {
   align-items: center;
   color: #000000;
 }
+
 button.change-unit {
   display: flex;
   font-size: medium;
@@ -57,12 +59,14 @@ button.change-unit {
   align-items: center;
   color: #000000;
 }
+
 button.clear-icon {
   display: flex;
   transform: rotate(90deg);
   align-items: center;
   color: #000000;
 }
+
 button.menu-open-icon {
   display: flex;
   align-items: center;
@@ -75,6 +79,5 @@ button.menu-open-icon {
   width: 40vw;
   max-width: 400px;
   min-width: 200px;
-  padding-bottom: 10px;
-  z-index: 100000;
+  z-index: 10001;
 }
