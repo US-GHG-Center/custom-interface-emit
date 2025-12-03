@@ -67,3 +67,14 @@ button.menu-open-icon {
   display: flex;
   align-items: center;
 }
+
+.dashboard-title-container {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 40vw;
+  max-width: 430px;
+  min-width: 250px;
+  padding-bottom: 10px;
+  z-index: 100000;
+}

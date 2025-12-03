@@ -208,34 +208,73 @@ export function Dashboard({
     <div className='fullSize'>
       <div id='dashboard-map-container'>
         <MainMap>
-          <Paper className='title-container'>
-            <Title title={TITLE} description={DESCRIPTION} />
-            <div className='title-content'>
-              <HorizontalLayout>
-                <Search
-                  setFromSearch={setFromSearch}
-                  vizItems={Object.keys(filteredVizItems).map(
-                    (key) => filteredVizItems[key]
-                  )}
-                  onSelectedVizItemSearch={handleSelectedVizItemSearch}
-                ></Search>
-              </HorizontalLayout>
-              <HorizontalLayout>
-                <FilterByDate
-                  filterDateRange={filterDateRange}
-                  onDateChange={handleDateRangeChange}
-                />
-              </HorizontalLayout>
-              <HorizontalLayout>
-                <ToggleSwitch
-                  title={'Show EMIT Coverage'}
-                  onToggle={handleCoverageToggle}
-                  initialState={showCoverage}
-                  enabled={enableToggle}
-                />
-              </HorizontalLayout>
-            </div>
-          </Paper>
+          <div className='dashboard-title-container'>
+            <Accordion sx={{ position: 'relative', zIndex: 1 }}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{
+                  minHeight: '48px',
+                  '&.Mui-expanded': {
+                    minHeight: '48px',
+                  },
+                  '& .MuiAccordionSummary-content': {
+                    margin: '12px 0',
+                  },
+                  '& .MuiAccordionSummary-content.Mui-expanded': {
+                    margin: '12px 0',
+                  },
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  component='div'
+                  fontWeight='bold'
+                  color='var(--main-grey)'
+                  sx={{ padding: '0 10px' }}
+                >
+                  {TITLE}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails
+                sx={{ margin: '0 12px', padding: '0', maxHeight: '70vh', overflowY: 'auto', position: 'relative', zIndex: 1 }}
+              >
+                {DESCRIPTION && (
+                  <Typography
+                    variant='body2'
+                    component='div'
+                    color='text.secondary'
+                    sx={{ marginBottom: '1rem', padding: '0 0.9rem' }}
+                  >
+                    {DESCRIPTION}
+                  </Typography>)}
+                <div className='title-content'>
+                  <HorizontalLayout>
+                    <Search
+                      setFromSearch={setFromSearch}
+                      vizItems={Object.keys(filteredVizItems).map(
+                        (key) => filteredVizItems[key]
+                      )}
+                      onSelectedVizItemSearch={handleSelectedVizItemSearch}
+                    ></Search>
+                  </HorizontalLayout>
+                  <HorizontalLayout>
+                    <FilterByDate
+                      filterDateRange={filterDateRange}
+                      onDateChange={handleDateRangeChange}
+                    />
+                  </HorizontalLayout>
+                  <HorizontalLayout>
+                    <ToggleSwitch
+                      title={'Show EMIT Coverage'}
+                      onToggle={handleCoverageToggle}
+                      initialState={showCoverage}
+                      enabled={enableToggle}
+                    />
+                  </HorizontalLayout>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          </div>
           <MapZoom zoomLocation={zoomLocation} zoomLevel={zoomLevel} />
           <MapControls
             openDrawer={openDrawer}
