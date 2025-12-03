@@ -99,7 +99,11 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
           id='outlined-basic'
           label='Search by Plume ID or Location'
           variant='outlined'
-          style={{ width: '100%', backgroundColor: '#EEEEEE' }}
+          size="small"
+          style={{
+            width: '100%',
+            backgroundColor: '#FFFFFF',
+          }}
           onChange={handleOnInputTextChange}
           InputProps={{
             ...params.InputProps,
