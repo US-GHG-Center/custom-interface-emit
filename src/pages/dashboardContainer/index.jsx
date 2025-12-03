@@ -1,4 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+
 import { Dashboard } from '../dashboard/index.jsx';
 import {
   fetchCollectionMetadata,
@@ -32,6 +34,8 @@ export const DashboardContainer = ({
   defaultZoomLevel,
   defaultStartDate,
 }) => {
+  // get the query params
+  const [searchParams] = useSearchParams();
   const { config } = useConfig();
   const [coverage, setCoverage] = useState();
   const [zoomLocation, setZoomLocation] = useState(defaultZoomLocation);
@@ -40,6 +44,7 @@ export const DashboardContainer = ({
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   const [filterDateRange, setFilterDateRange] = useState({});
+  const isEmbeded = searchParams.get('embeded') === 'true' || false;
 
   // Fetch collection metadata and plumes data
   useEffect(() => {
@@ -130,6 +135,7 @@ export const DashboardContainer = ({
       filterDateRange={filterDateRange}
       collectionId={collectionId}
       loadingData={loadingData}
+      isEmbeded={isEmbeded}
     />
   );
 };
