@@ -53,6 +53,36 @@ const DefaultMapControls = ({
 }) => {
   const { map } = useMapbox();
   const customControlContainer = useRef();
+  const [drawerWidth, setDrawerWidth] = useState(0);
+
+  /**
+   * Measure the persistent drawer width to calculate dynamic positioning
+   */
+  useEffect(() => {
+    const measureDrawerWidth = () => {
+      // Measure drawer width
+      const drawerElement = document.querySelector('.MuiDrawer-paper');
+      if (drawerElement && openDrawer) {
+        setDrawerWidth(drawerElement.offsetWidth);
+      } else {
+        setDrawerWidth(0);
+      }
+    };
+
+    // Initial measurement
+    measureDrawerWidth();
+
+    // Remeasure on window resize
+    window.addEventListener('resize', measureDrawerWidth);
+
+    // Use a small timeout to ensure drawer transition completes
+    const timeoutId = setTimeout(measureDrawerWidth, 300);
+
+    return () => {
+      window.removeEventListener('resize', measureDrawerWidth);
+      clearTimeout(timeoutId);
+    };
+  }, [openDrawer]);
 
   /**
    * Setup static controls (hamburger, home, nav, visibility).
@@ -163,11 +193,16 @@ const DefaultMapControls = ({
     };
   }, [map, mapScaleUnit, measureMode]);
 
+  // Calculate dynamic right position: drawer width + 10px gap
+  const rightPosition = openDrawer && drawerWidth > 0
+    ? `${drawerWidth + 10}px`
+    : '0.5rem';
+
   return (
     <div
       id='mapbox-custom-controls'
       ref={customControlContainer}
-      style={{ right: openDrawer ? '30.7rem' : '0.5rem' }}
+      style={{ right: rightPosition }}
     ></div>
   );
 };
