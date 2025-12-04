@@ -3,6 +3,7 @@
   text-align: center;
   border-bottom: 2px solid var(--main-grey);
   margin: 0 0.9rem;
+  margin-bottom: 0.9rem;
 }
 
 .drawer-head-content {
