@@ -93,8 +93,16 @@ export function Dashboard({
   const [showLegend, setShowLegend] = useState(true);
 
   // state for right drawer
+  const [drawerActive, setDrawerActive] = useState(false);
   const [internalOpenDrawer, setInternalOpenDrawer] = useState(false);
   const openDrawer = isEmbedded ? false : internalOpenDrawer;
+
+  // Update drawerActive based on conditions: not embedded AND has visualization layers
+  useEffect(() => {
+    const isActive = !isEmbedded && visualizationLayers?.length > 0;
+    setDrawerActive(isActive);
+  }, [isEmbedded, visualizationLayers]);
+
   //  set drawer to open only when it is not embeded
   const setOpenDrawer = useCallback((isOpen) => {
     if (isOpen && (isEmbedded || !visualizationLayers?.length)) {
@@ -313,6 +321,7 @@ export function Dashboard({
           </div>
           <MapZoom zoomLocation={zoomLocation} zoomLevel={zoomLevel} />
           <MapControls
+            isDrawerActive={drawerActive}
             openDrawer={openDrawer}
             setOpenDrawer={setOpenDrawer}
             handleResetHome={handleResetHome}
