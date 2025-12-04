@@ -11,15 +11,22 @@ import MenuIcon from '@mui/icons-material/Menu';
  *
  * @param {Object} props
  * @param {Function} props.onClickHandler - Function to call when the icon is clicked.
+ * @param {boolean} props.isActive - Whether the drawer is currently active/open.
  * @returns {JSX.Element} MUI IconButton wrapped in a tooltip.
  */
 
-function HamburgerIcon({ onClickHandler }) {
+function HamburgerIcon({ onClickHandler, isActive }) {
   return (
-    <Tooltip title='Toggle Drawer'>
-      <IconButton className='menu-open-icon' onClick={onClickHandler}>
-        <MenuIcon className='map-control-icon'  sx={{ color: '#2d2d2d' }}/>
-      </IconButton>
+    <Tooltip title={isActive ? 'Toggle Drawer' : 'Drawer unavailable'}>
+      <span>
+        <IconButton
+          className='menu-open-icon'
+          onClick={onClickHandler}
+          disabled={!isActive}
+        >
+          <MenuIcon className='map-control-icon' sx={{ color: isActive ? '#2d2d2d' : '#888' }}/>
+        </IconButton>
+      </span>
     </Tooltip>
   );
 }
@@ -36,9 +43,11 @@ function HamburgerIcon({ onClickHandler }) {
 export class HamburgerControl {
   /**
    * @param {Function} onHamburgerClick - Callback triggered when the icon is clicked.
+   * @param {boolean} drawerActive - Whether the drawer is currently active/open.
    */
-  constructor(onHamburgerClick) {
+  constructor(onHamburgerClick, drawerActive) {
     this._onClick = onHamburgerClick;
+    this._drawerActive = drawerActive;
     this.root = null;
     this.isMounted = true;
   }
@@ -55,9 +64,22 @@ export class HamburgerControl {
     this._container = document.createElement('div');
     this._container.className = 'mapboxgl-ctrl mapboxgl-ctrl-group';
     const root = ReactDOM.createRoot(this._container);
-    root.render(<HamburgerIcon onClickHandler={this._onClick} />);
+    root.render(<HamburgerIcon onClickHandler={this._onClick} isActive={this._drawerActive} />);
     this.root = root;
     return this._container;
+  }
+
+  /**
+   * Update the control with new drawer active state.
+   * Re-renders the React component with updated props.
+   *
+   * @param {boolean} drawerActive - New drawer active state.
+   */
+  update(drawerActive) {
+    this._drawerActive = drawerActive;
+    if (this.root && this.isMounted) {
+      this.root.render(<HamburgerIcon onClickHandler={this._onClick} isActive={this._drawerActive} />);
+    }
   }
 
   /**

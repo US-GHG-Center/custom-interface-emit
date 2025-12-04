@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { useMapbox } from '../../../context/mapContext';
 import { HamburgerControl } from './hamburger';
@@ -42,6 +42,7 @@ const scaleUnits = {
  */
 
 const DefaultMapControls = ({
+  isDrawerActive,
   measureMode,
   onClickHamburger,
   onClickMeasureMode,
@@ -53,6 +54,7 @@ const DefaultMapControls = ({
 }) => {
   const { map } = useMapbox();
   const customControlContainer = useRef();
+  const hamburgerControlRef = useRef();
   const [drawerWidth, setDrawerWidth] = useState(0);
 
   /**
@@ -84,13 +86,24 @@ const DefaultMapControls = ({
     };
   }, [openDrawer]);
 
+  const onClickHamburgerRef = useRef(onClickHamburger);
+
+  useEffect(() => {
+    onClickHamburgerRef.current = onClickHamburger;
+  }, [onClickHamburger]);
+
   /**
    * Setup static controls (hamburger, home, nav, visibility).
    */
   useEffect(() => {
     if (!map) return;
 
-    const hamburgerControl = new HamburgerControl(onClickHamburger);
+    const hamburgerControl = new HamburgerControl(() =>
+      onClickHamburgerRef.current(),
+      isDrawerActive
+    );
+    hamburgerControlRef.current = hamburgerControl;
+
     const mapboxNavigation = new mapboxgl.NavigationControl({
       showCompass: false,
     });
@@ -116,8 +129,18 @@ const DefaultMapControls = ({
       if (mapboxNavigation) mapboxNavigation.onRemove();
       if (layerVisibilityControl) layerVisibilityControl.onRemove();
       if (homeControl) homeControl.onRemove();
+      hamburgerControlRef.current = null;
     };
   }, [map]);
+
+  /**
+   * Update hamburger control when drawer active state changes.
+   */
+  useEffect(() => {
+    if (hamburgerControlRef.current) {
+      hamburgerControlRef.current.update(isDrawerActive);
+    }
+  }, [isDrawerActive]);
 
   /**
    * Add the measurement tool control.
@@ -223,6 +246,7 @@ const DefaultMapControls = ({
  */
 
 export const MapControls = ({
+  isDrawerActive,
   openDrawer,
   setOpenDrawer,
   handleResetHome,
@@ -232,14 +256,17 @@ export const MapControls = ({
   const [clearMeasurementIcon, setClearMeasurementIcon] = useState(false);
   const [clearMeasurementLayer, setClearMeasurementLayer] = useState(false);
   const [mapScaleUnit, setMapScaleUnit] = useState(scaleUnits.MILES);
+  const handleHamburgerClick = useCallback(() => {
+    setOpenDrawer(!openDrawer);
+  }, [openDrawer, setOpenDrawer]);
+
   return (
     <>
       <DefaultMapControls
+        isDrawerActive={isDrawerActive}
         openDrawer={openDrawer}
         measureMode={measureMode}
-        onClickHamburger={() => {
-          setOpenDrawer((openDrawer) => !openDrawer);
-        }}
+        onClickHamburger={handleHamburgerClick}
         onClickMeasureMode={() => {
           setMeasureMode((measureMode) => !measureMode);
         }}
