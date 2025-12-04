@@ -94,7 +94,7 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
       }}
       componentsProps={{
         popper: {
-          style: { zIndex: 1002 }
+          style: { zIndex: 10002 }
         },
         paper: {
           sx: {
