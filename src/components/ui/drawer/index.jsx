@@ -91,7 +91,6 @@ export function PersistentDrawerRight({
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  // console.log({ hoveredVizLayerId });
   useEffect(() => {
     if (!selectedVizItems.length) {
       setNumberOfVizItems(0);
