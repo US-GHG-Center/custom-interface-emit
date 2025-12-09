@@ -37,14 +37,16 @@ export const DashboardContainer = ({
   // get the query params
   const [searchParams] = useSearchParams();
   const { config } = useConfig();
+  const isEmbedded = searchParams.get('embed') === 'true';
   const [coverage, setCoverage] = useState();
-  const [zoomLocation, setZoomLocation] = useState(defaultZoomLocation);
-  const [zoomLevel, setZoomLevel] = useState(defaultZoomLevel);
+  const [zoomLocation, setZoomLocation] = useState(
+    isEmbedded ? [-40, 5] : defaultZoomLocation
+  );
+  const [zoomLevel, setZoomLevel] = useState(isEmbedded ? 1 : defaultZoomLevel);
   const [collectionMeta, setCollectionMeta] = useState({});
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
   const [filterDateRange, setFilterDateRange] = useState({});
-  const isEmbedded = searchParams.get('embed') === 'true' || false;
 
   // Fetch collection metadata and plumes data
   useEffect(() => {
