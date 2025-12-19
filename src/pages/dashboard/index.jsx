@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -237,6 +237,24 @@ export function Dashboard({
       setShowCoverages(val);
     }
   };
+
+  const markerItems = useMemo(() => {
+    return Object.keys(filteredVizItems).map((item) => {
+      const v = filteredVizItems[item];
+      const plumeProperties = v?.plumeProperties;
+      return {
+        coordinates: {
+          lat: v?.lat,
+          lon: v?.lon,
+        },
+        location: plumeProperties?.location,
+        utcTimeObserved: plumeProperties?.utcTimeObserved,
+        id: item,
+        plumeId: plumeProperties?.plumeId,
+      };
+    });
+  }, [filteredVizItems]);
+
   return (
     <div className='fullSize'>
       <div id='dashboard-map-container'>
@@ -335,20 +353,7 @@ export function Dashboard({
           ></MapViewPortComponent>
           <MarkerFeature
             getPopupContent={getPopupContent}
-            items={Object.keys(filteredVizItems).map((item) => {
-              const v = filteredVizItems[item];
-              const plumeProperties = v?.plumeProperties;
-              return {
-                coordinates: {
-                  lat: v?.lat,
-                  lon: v?.lon,
-                },
-                location: plumeProperties?.location,
-                utcTimeObserved: plumeProperties?.utcTimeObserved,
-                id: item,
-                plumeId: plumeProperties?.plumeId,
-              };
-            })}
+            items={markerItems}
             onSelectVizItem={handleSelectedVizItem}
           ></MarkerFeature>
           {showCoverage && <CoverageLayers coverage={coverageFeatures} />}
