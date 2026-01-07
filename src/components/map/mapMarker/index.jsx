@@ -89,10 +89,6 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
       }
     };
 
-    if (map.isStyleLoaded()) {
-      addMapElements();
-    } 
-
     map.on('style.load', addMapElements);
 
     // Cleanup function when component unmounts
@@ -137,8 +133,7 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
     };
 
     map.on('zoom', handleZoom);
-    // Initial check
-    handleZoom();
+
 
     return () => map.off('zoom', handleZoom);
   }, [map]);
