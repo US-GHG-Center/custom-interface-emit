@@ -58,6 +58,7 @@ export const MapboxProvider = ({ children }) => {
 
       // Disable rotation interactions after style is loaded
       map.current.on('style.load', () => {
+        if (!map.current) return;
         map.current.dragRotate.disable();
         map.current.touchZoomRotate.disableRotation();
       });
