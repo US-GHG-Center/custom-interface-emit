@@ -37,12 +37,35 @@ export const DashboardContainer = ({
   // get the query params
   const [searchParams] = useSearchParams();
   const { config } = useConfig();
-  const isEmbedded = searchParams.get('embed') === 'true';
+  const isSimpleView = searchParams.get('viewMode') === 'simple';
+
+  // Parse zoom location from search params (format: ?zoomLocation=-40,5)
+  const getZoomLocationFromParams = () => {
+    const zoomLocationParam = searchParams.get('zoomLocation');
+    if (zoomLocationParam) {
+      const coords = zoomLocationParam.split(',').map(Number);
+      if (coords.length === 2 && !coords.some(isNaN)) {
+        return coords;
+      }
+    }
+    return defaultZoomLocation;
+  };
+
+  // Parse zoom level from search params (format: ?zoomLevel=1)
+  const getZoomLevelFromParams = () => {
+    const zoomLevelParam = searchParams.get('zoomLevel');
+    if (zoomLevelParam) {
+      const level = Number(zoomLevelParam);
+      if (!isNaN(level)) {
+        return level;
+      }
+    }
+    return defaultZoomLevel;
+  };
+
   const [coverage, setCoverage] = useState();
-  const [zoomLocation, setZoomLocation] = useState(
-    isEmbedded ? [-40, 5] : defaultZoomLocation
-  );
-  const [zoomLevel, setZoomLevel] = useState(isEmbedded ? 1 : defaultZoomLevel);
+  const [zoomLocation, setZoomLocation] = useState(getZoomLocationFromParams());
+  const [zoomLevel, setZoomLevel] = useState(getZoomLevelFromParams());
   const [collectionMeta, setCollectionMeta] = useState({});
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
@@ -137,7 +160,7 @@ export const DashboardContainer = ({
       filterDateRange={filterDateRange}
       collectionId={collectionId}
       loadingData={loadingData}
-      isEmbedded={isEmbedded}
+      isSimpleView={isSimpleView}
     />
   );
 };
