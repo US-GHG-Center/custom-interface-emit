@@ -75,7 +75,7 @@ export function Dashboard({
   setZoomLevel,
   collectionId,
   loadingData,
-  isEmbedded,
+  isSimpleView,
 }) {
   // states for data
   const [vizItems, setVizItems] = useState([]); // store all available visualization items
@@ -95,21 +95,21 @@ export function Dashboard({
   // state for right drawer
   const [drawerActive, setDrawerActive] = useState(false);
   const [internalOpenDrawer, setInternalOpenDrawer] = useState(false);
-  const openDrawer = isEmbedded ? false : internalOpenDrawer;
+  const openDrawer = isSimpleView ? false : internalOpenDrawer;
 
   // Update drawerActive based on conditions: not embedded AND has visualization layers
   useEffect(() => {
-    const isActive = !isEmbedded && visualizationLayers?.length > 0;
+    const isActive = !isSimpleView && visualizationLayers?.length > 0;
     setDrawerActive(isActive);
-  }, [isEmbedded, visualizationLayers]);
+  }, [isSimpleView, visualizationLayers]);
 
   //  set drawer to open only when it is not embeded
   const setOpenDrawer = useCallback((isOpen) => {
-    if (isOpen && (isEmbedded || !visualizationLayers?.length)) {
+    if (isOpen && (isSimpleView || !visualizationLayers?.length)) {
       return;
     }
     setInternalOpenDrawer(isOpen);
-  }, [isEmbedded, visualizationLayers]);
+  }, [isSimpleView, visualizationLayers]);
 
 
   const { config } = useConfig();
@@ -120,7 +120,7 @@ export function Dashboard({
   const [colormap, setColormap] = useState('plasma');
   const [assets, setAssets] = useState('ch4-plume-emissions');
 
-  const expandAccordion = isEmbedded ? false : true;
+  const expandAccordion = isSimpleView ? false : true;
 
   // handler functions
   const handleSelectedVizItem = (vizItemId) => {
