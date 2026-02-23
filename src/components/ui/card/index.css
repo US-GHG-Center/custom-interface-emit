@@ -6,6 +6,26 @@
   text-decoration: none;
 }
 
-.card-download-link > div {
-  color: #0098d7;
+.card-download-link>div {
+  color: var(--ghg-indigo);
+  font-size: 12px;
+}
+
+.card-container {
+  container-type: inline-size;
+  container-name: card;
+}
+
+.responsive-card {
+  display: flex;
+  flex-direction: row;
+  margin: 0 0 15px 0;
+  gap: 10px;
+}
+
+/* Stack image on top when card width is below 500px */
+@container card (max-width: 400px) {
+  .responsive-card {
+    flex-direction: column;
+  }
 }

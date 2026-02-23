@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import Divider from '@mui/material/Divider';
 import DownloadIcon from '@mui/icons-material/Download';
 import './index.css';
+import { useConfig } from '../../../context/configContext';
 
 const HorizontalLayout = styled.div`
   width: 100%;
@@ -17,6 +18,7 @@ const HorizontalLayout = styled.div`
   justify-content: space-between;
   margin-top: 5px;
   margin-bottom: 5px;
+  overflow: auto;
 `;
 
 const HighlightableCard = styled(Card)`
@@ -27,7 +29,7 @@ const HighlightableCard = styled(Card)`
   }
   border: ${(props) =>
     //eslint-disable-next-line prettier/prettier
-    props.$isHovered ? '1px solid blue' : '1px solid transparent'};
+    props.$isHovered ? '1px solid #4866ff' : '1px solid transparent'};
   box-shadow: ${(props) =>
     //eslint-disable-next-line prettier/prettier
     props.$isHovered ? '0 4px 20px rgba(0, 0, 0, 0.2)' : 'none'};
@@ -41,10 +43,11 @@ const CaptionValue = ({ caption, value, className }) => {
         variant='caption'
         component='div'
         sx={{
-          color: '#082A63',
-          fontWeight: 700,
+          color: '#808080',
+          fontWeight: 500,
           unicodeBidi: 'isolate',
-          fontSize: 13,
+          fontFamily: "Public sans",
+          fontSize: 11,
           lineHeight: 1.2,
         }}
       >
@@ -55,8 +58,8 @@ const CaptionValue = ({ caption, value, className }) => {
         variant='body2'
         component='div'
         sx={{
-          color: '#082A63',
-          fontSize: 12,
+          color: 'var(--main-grey)',
+          fontSize: 13,
           wordWrap: 'break-word',
           overflowWrap: 'break-word',
         }}
@@ -93,9 +96,11 @@ export const VisualizationItemCard = forwardRef(
     },
     ref
   ) => {
+    const { config } = useConfig();
+    const rasterApiUrl = config.rasterApiUrl;
     const vizItemSourceId = vizItem?.id;
     const orbit = vizItem?.plumeProperties?.orbit;
-    const imageUrl = `${process.env.REACT_APP_RASTER_API_URL}/collections/emit-ch4plume-v1/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
+    const imageUrl = `${rasterApiUrl}/collections/emit-ch4plume-v1/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
     const tiffUrl = vizItem?.plumeProperties?.assetLink;
     const location = vizItem?.plumeProperties?.location;
     const maxPlumeConcentration = vizItem?.plumeProperties?.maxConcentration;
@@ -125,19 +130,30 @@ export const VisualizationItemCard = forwardRef(
       if (hoveredVizItemId !== vizItemSourceId) setIsHovered(false);
     }, [hoveredVizItemId, vizItemSourceId]);
     return (
-      <div ref={ref}>
+      <div
+        className="card-container"
+        style={{
+          width: "100%",
+          maxWidth: "94%",
+          marginLeft: "auto",
+          marginRight: "auto"
+        }}
+        ref={ref}
+      >
         <HighlightableCard
-          sx={{ display: 'flex', flex: '0 0 auto', margin: '15px' }}
+          className="responsive-card"
           onClick={handleCardClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
           $isHovered={isHovered}
         >
           <div
+            className="card-image-container"
             style={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              flexShrink: 0
             }}
           >
             <CardMedia
@@ -154,12 +170,20 @@ export const VisualizationItemCard = forwardRef(
             />
           </div>
 
-          <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-            <CardContent sx={{ flex: '1 0 auto' }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              fontFamily: "Sans",
+              flex: 1,
+              minWidth: 0
+            }}
+          >
+            <CardContent sx={{ flex: '1 0 auto', width: "100%", overflow: "hidden", maxWidth: "100%" }}>
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='ID:'
+                  caption='ID'
                   value={vizItemSourceId}
                 />
                 <CaptionValue
@@ -193,33 +217,34 @@ export const VisualizationItemCard = forwardRef(
                 />
                 <CaptionValue
                   className='card-plume'
-                  caption='UTC Time Observed:'
+                  caption='UTC Time Observed'
                   value={utcTimeObserved}
                 />
               </HorizontalLayout>
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Max Plume Concentration:'
+                  caption='Max Plume Concentration'
                   value={maxPlumeConcentration + ' ppm m'}
                 />
                 <CaptionValue
                   className='card-plume'
-                  caption='Concentration Uncertainity:'
+                  caption='Concentration Uncertainity'
                   value={concentrationUncertanity + ' ppm m'}
                 />
               </HorizontalLayout>
               <HorizontalLayout>
                 <CaptionValue
                   className='card-plume'
-                  caption='Longitude (Max Conc):'
-                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
+                  caption='Latitude (Max Conc)'
+                  value={Number(latitudeOfMaxConcentration).toFixed(3)}
                 />
                 <CaptionValue
                   className='card-plume'
-                  caption='Latitude (Max Conc):'
-                  value={Number(latitudeOfMaxConcentration).toFixed(3)}
+                  caption='Longitude (Max Conc)'
+                  value={Number(longitudeOfMaxConcentration).toFixed(3)}
                 />
+
               </HorizontalLayout>
             </CardContent>
           </Box>

@@ -51,8 +51,10 @@ export function MapViewPortComponent({
   };
 
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
-
+    //if uncommented this will fail to update the filtered items
+    // (while viewing coverage and plumes and the same time )
+    // if (!map.isStyleLoaded()) return;
+    if (!map) return;
     const handleViewportChange = () => {
       const zoom = map.getZoom();
       if (zoom >= ZOOM_LEVEL_MARGIN && !fromSearch) {

@@ -1,5 +1,5 @@
 .title-head {
-  color: var(--main-blue);
+  color: var(--main-grey);
   text-align: left;
   padding-left: 0.9rem;
   padding-top: 0.9rem;
@@ -29,6 +29,6 @@
 }
 
 .title-divider {
-  border-color: var(--main-blue) !important;
-  border-width: 1px !important;
+  border: 1px solid #d0d0d0;
+  margin: '0 1.5rem';
 }

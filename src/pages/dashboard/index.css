@@ -5,7 +5,7 @@
 
 #dashboard-map-container {
   width: 100%;
-  height: 100%;
+  height: 100vh;
   position: relative;
   overflow: hidden;
 }
@@ -40,6 +40,7 @@
   border-radius: 5px;
   z-index: 1000;
 }
+
 .map-icon {
   color: #ffffff;
 }
@@ -50,6 +51,7 @@ button.measure-icon {
   align-items: center;
   color: #000000;
 }
+
 button.change-unit {
   display: flex;
   font-size: medium;
@@ -57,13 +59,33 @@ button.change-unit {
   align-items: center;
   color: #000000;
 }
+
 button.clear-icon {
   display: flex;
   transform: rotate(90deg);
   align-items: center;
   color: #000000;
 }
+
 button.menu-open-icon {
   display: flex;
   align-items: center;
+}
+
+.dashboard-title-container {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 40vw;
+  max-width: 400px;
+  min-width: 200px;
+  z-index: 10001;
+  container-type: inline-size;
+  container-name: title-container;
+}
+
+@container title-container (width < 215px) {
+  .accordion-title {
+    font-size: 1rem !important;
+  }
 }

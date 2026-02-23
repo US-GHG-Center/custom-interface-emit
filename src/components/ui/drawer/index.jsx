@@ -9,7 +9,8 @@ import { useEffect, useState, useRef } from 'react';
 
 import './index.css';
 
-const drawerWidth = '30rem';
+const drawerWidth = '25vw';
+const drawerMinWidth = '300px';
 const Main = styledmui('main', {
   shouldForwardProp: (prop) => prop !== 'open',
 })(({ theme }) => ({
@@ -91,7 +92,6 @@ export function PersistentDrawerRight({
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  // console.log({ hoveredVizLayerId });
   useEffect(() => {
     if (!selectedVizItems.length) {
       setNumberOfVizItems(0);
@@ -119,14 +119,16 @@ export function PersistentDrawerRight({
       <Drawer
         sx={{
           width: drawerWidth,
+          minWidth: drawerMinWidth,
           marginRight: '5px',
           marginTop: '5px',
           flexShrink: 0,
           '& .MuiDrawer-paper': {
+            minWidth: drawerMinWidth,
             width: drawerWidth,
             marginRight: '5px',
             marginTop: '5px',
-            height: 'calc(100vh - var(--colorbar-height) - 3.5%)', //colobar is up 3% from bottom
+            height: 'calc(100vh - var(--colorbar-height) - 15px)', //colobar is 5px from bottom and drawer is 5px from top
             borderRadius: '3px',
           },
         }}
@@ -153,25 +155,27 @@ export function PersistentDrawerRight({
             </Typography>
           </HorizontalLayout>
         </DrawerHeader>
-        {selectedVizItems?.length ? (
-          selectedVizItems?.map((selectedVizItem) => (
-            <VisualizationItemCard
-              key={selectedVizItem?.id}
-              ref={
-                selectedVizItem?.id === hoveredVizLayerId
-                  ? highlightedCardRef
-                  : null
-              }
-              vizItem={selectedVizItem}
-              collectionId={collectionId}
-              onSelectVizLayer={onSelectVizLayer}
-              hoveredVizItemId={hoveredVizLayerId}
-              onHoverOnVizLayer={onHoverOnVizLayer}
-            />
-          ))
-        ) : (
-          <></>
-        )}
+        <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+          {selectedVizItems?.length ? (
+            selectedVizItems?.map((selectedVizItem) => (
+              <VisualizationItemCard
+                key={selectedVizItem?.id}
+                ref={
+                  selectedVizItem?.id === hoveredVizLayerId
+                    ? highlightedCardRef
+                    : null
+                }
+                vizItem={selectedVizItem}
+                collectionId={collectionId}
+                onSelectVizLayer={onSelectVizLayer}
+                hoveredVizItemId={hoveredVizLayerId}
+                onHoverOnVizLayer={onHoverOnVizLayer}
+              />
+            ))
+          ) : (
+            <></>
+          )}
+        </Box>
       </Drawer>
     </Box>
   );

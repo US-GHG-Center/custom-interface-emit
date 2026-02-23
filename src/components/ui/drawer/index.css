@@ -1,8 +1,9 @@
 .drawer-head {
-  color: var(--main-blue);
+  color: var(--main-grey);
   text-align: center;
-  border-bottom: 2px solid var(--main-blue);
+  border-bottom: 2px solid var(--main-grey);
   margin: 0 0.9rem;
+  margin-bottom: 0.9rem;
 }
 
 .drawer-head-content {

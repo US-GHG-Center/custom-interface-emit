@@ -4,6 +4,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import SearchIcon from '@mui/icons-material/Search';
 import InputAdornment from '@mui/material/InputAdornment';
 import { TrieSearch } from './helper/trieSearch';
+import "./index.css"
 
 /**
  * Search Component
@@ -24,15 +25,16 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
    * `Plume ID: region_state_country_plumeID`
    */
   const ids = vizItems?.map((vizItem) => {
-    const id = vizItem?.id;
+    const id = vizItem?.id
+    const plumeId = vizItem?.plumeProperties?.plumeId;
     const location = vizItem?.plumeProperties?.location;
-    const idString = id.split('_').join('-');
     const locationString = location
       ?.split(',')
       .reverse()
       .map((part) => part.trim())
       .join('_');
-    return `${locationString}_${idString}`;
+    const value = plumeId ? `${plumeId} (${locationString})` : String(id ?? "")
+    return { id, value }
   });
 
   const trieSearch = useRef(null);
@@ -66,8 +68,7 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
     if (!clickedValue) return;
     setSelectedOption(null); // reset to allow re-selection
     setSelectedOption(clickedValue);
-    const temp = clickedValue.split('_')[3];
-    const vizItemId = temp.split('-').join('_');
+    const vizItemId = clickedValue?.id
     setFromSearch(true);
     onSelectedVizItemSearch(vizItemId);
     setSelectedOption(null);
@@ -85,6 +86,30 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
       id='free-solo-2-demo'
       disableClearable
       options={searchOptions}
+      getOptionLabel={(option) => (typeof option === 'string' ? option : option?.value)}
+      isOptionEqualToValue={(option, value) => {
+        if (!option || !value) return false;
+        if (typeof option === 'string' || typeof value === 'string') return option === value
+        return option.id === value.id && option.value === value.value
+      }}
+      componentsProps={{
+        popper: {
+          style: { zIndex: 10002 }
+        },
+        paper: {
+          sx: {
+            backgroundColor: '#FFFFFF',
+            color: 'grey',
+            fontSize: '13px',
+            '& .MuiAutocomplete-option': {
+              fontSize: '13px',
+              minHeight: 'auto',
+              padding: '4px 8px',
+              color: 'grey'
+            }
+          }
+        }
+      }}
       style={{ width: '100%' }}
       renderInput={(params) => (
         <TextField
@@ -92,21 +117,51 @@ export function Search({ vizItems, onSelectedVizItemSearch, setFromSearch }) {
           id='outlined-basic'
           label='Search by Plume ID or Location'
           variant='outlined'
-          style={{ width: '100%', backgroundColor: '#EEEEEE' }}
+          size="small"
+          style={{
+            width: '100%',
+            backgroundColor: '#FFFFFF',
+          }}
           onChange={handleOnInputTextChange}
           InputProps={{
             ...params.InputProps,
             endAdornment: (
               <>
-                <InputAdornment position='end'>
+                <InputAdornment
+                  position='end'
+                  sx={{
+                    color: 'grey !important',
+                  }}>
                   <SearchIcon />
                 </InputAdornment>
                 {params.InputProps.endAdornment}
               </>
             ),
           }}
+          InputLabelProps={{
+            style: { color: 'grey !important', fontSize: '13px' },
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              fontSize: "13px",
+              "& fieldset": {
+                borderColor: "grey !important"
+              },
+              "&:hover fieldset": {
+                borderColor: "grey !important"
+              },
+
+              "&.Mui-focused fieldset": {
+                borderColor: "grey !important",
+              }
+            },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "#808080 !important", // Replace with your desired color
+            }
+          }}
         />
       )}
+
       onChange={handleOnOptionClicked}
       value={selectedOption}
     />

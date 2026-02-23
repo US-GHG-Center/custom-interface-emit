@@ -7,6 +7,7 @@ import {
   getSourceId,
   getLayerId,
 } from '../utils/index';
+import { useConfig } from '../../../context/configContext';
 
 /**
  * VisualizationLayer
@@ -37,6 +38,7 @@ export const VisualizationLayer = ({
   registerEventHandler,
 }) => {
   const { map } = useMapbox();
+  const { config } = useConfig();
   const [vizItemId, setVizItemId] = useState('');
 
   // Extract the visualization ID once the item is received
@@ -61,6 +63,7 @@ export const VisualizationLayer = ({
     const polygonLayerId = getLayerId('polygon', vizItemId);
     const polygonFillSourceId = getSourceId('fill', vizItemId);
     const polygonFillLayerId = getLayerId('fill', vizItemId);
+    const rasterApiUrl = config.rasterApiUrl;
 
     // Add layers to map
     addSourceLayerToMap(
@@ -71,7 +74,8 @@ export const VisualizationLayer = ({
       assets,
       feature,
       rasterSourceId,
-      rasterLayerId
+      rasterLayerId,
+      rasterApiUrl
     );
 
     addSourcePolygonToMap(

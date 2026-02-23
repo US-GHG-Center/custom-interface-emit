@@ -1,6 +1,9 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import Box from '@mui/material/Box';
-import Paper from '@mui/material/Paper';
+import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Typography from '@mui/material/Typography';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import {
   MainMap,
@@ -16,27 +19,31 @@ import {
   CoverageLayers,
   MapViewPortComponent,
   RASTER_ZOOM_LEVEL,
-} from '@components';
+  ToggleSwitch,
+} from '../../components';
 
 import styled from 'styled-components';
 
 import './index.css';
-import ToggleSwitch from '../../components/ui/toggle';
 import { filterByDateRange, getPopupContent } from './helper';
 import Plumes from './helper/PlumeLayer';
+import moment from 'moment';
+import { useConfig } from '../../context/configContext';
 
 const TITLE = 'EMIT Methane Plume Viewer';
+
 const DESCRIPTION =
   'Using a special technique, the EMIT hyperspectral data\
    is used to visualize large methane plumes whenever the instrument \
-   observes the surface. Due variations of the International Space Station orbit,\
+   observes the surface. Due to variations of the International Space Station orbit,\
    EMIT does not have a regular observation repeat cycle.';
+
 const HorizontalLayout = styled.div`
   width: 90%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin: 12px;
+  margin: 12px 12px 0 12px;
 `;
 
 /**
@@ -62,11 +69,13 @@ export function Dashboard({
   collectionMeta,
   coverage,
   zoomLocation,
+  filterDateRange,
   setZoomLocation,
   zoomLevel,
   setZoomLevel,
   collectionId,
   loadingData,
+  isSimpleView,
 }) {
   // states for data
   const [vizItems, setVizItems] = useState([]); // store all available visualization items
@@ -80,8 +89,30 @@ export function Dashboard({
   const [enableToggle, setEnableToggle] = useState(false);
   const [fromSearch, setFromSearch] = useState(false);
 
-  // states for components/controls
-  const [openDrawer, setOpenDrawer] = useState(false);
+  // state for displaying colorbar legend
+  const [showLegend, setShowLegend] = useState(true);
+
+  // state for right drawer
+  const [drawerActive, setDrawerActive] = useState(false);
+  const [internalOpenDrawer, setInternalOpenDrawer] = useState(false);
+  const openDrawer = isSimpleView ? false : internalOpenDrawer;
+
+  // Update drawerActive based on conditions: not embedded AND has visualization layers
+  useEffect(() => {
+    const isActive = !isSimpleView && visualizationLayers?.length > 0;
+    setDrawerActive(isActive);
+  }, [isSimpleView, visualizationLayers]);
+
+  //  set drawer to open only when it is not embeded
+  const setOpenDrawer = useCallback((isOpen) => {
+    if (isOpen && (isSimpleView || !visualizationLayers?.length)) {
+      return;
+    }
+    setInternalOpenDrawer(isOpen);
+  }, [isSimpleView, visualizationLayers]);
+
+
+  const { config } = useConfig();
 
   //colormap states
   const [VMAX, setVMAX] = useState(100);
@@ -89,16 +120,20 @@ export function Dashboard({
   const [colormap, setColormap] = useState('plasma');
   const [assets, setAssets] = useState('ch4-plume-emissions');
 
+  const expandAccordion = isSimpleView ? false : true;
+
   // handler functions
   const handleSelectedVizItem = (vizItemId) => {
     if (!vizItemId) return;
     setFromSearch(false);
     const vizItem = filteredVizItems[vizItemId];
-    const location = vizItem?.geometry?.coordinates[0][0];
+    const lat = vizItem?.lat;
+    const lon = vizItem?.lon;
     setVisualizationLayers([vizItem]);
-    setZoomLocation(location);
+    setZoomLocation([lon, lat]);
     setZoomLevel(RASTER_ZOOM_LEVEL); // take the default zoom level
     setOpenDrawer(true);
+    setShowLegend(true);
   };
 
   const handleClickedVizLayer = (vizLayerId) => {
@@ -123,12 +158,27 @@ export function Dashboard({
     setZoomLocation(location);
     setZoomLevel(RASTER_ZOOM_LEVEL);
     setOpenDrawer(true);
+    setShowLegend(true);
+  };
+  const filterVizItems = (dateRange, vizItems) => {
+    const allVizItems = Object.keys(vizItems)?.map((key) => vizItems[key]);
+    const filteredVizItems = allVizItems.filter((vizItem) => {
+      const vizItemDate = moment(vizItem?.properties?.datetime).valueOf();
+      const item = vizItemDate >= dateRange[0] && vizItemDate <= dateRange[1];
+      return item;
+    });
+    const newItems = {};
+    filteredVizItems.forEach((item) => {
+      newItems[item?.id] = item;
+    });
+    return newItems;
   };
 
   const handleResetHome = () => {
     setFromSearch(false);
     setVisualizationLayers([]);
     setOpenDrawer(false);
+    setShowLegend(false);
     setZoomLevel(4);
     setZoomLocation([-98.771556, 32.967243]);
   };
@@ -136,14 +186,6 @@ export function Dashboard({
   const handleHoveredVizLayer = useCallback((vizItemId) => {
     setHoveredVizLayerId(vizItemId);
   }, []);
-
-  const handleFilterVizItems = (result) => {
-    const newItems = {};
-    result.forEach((item) => {
-      newItems[item?.id] = item;
-    });
-    setFilteredVizItems(newItems);
-  };
 
   // Component Effects
   useEffect(() => {
@@ -171,14 +213,18 @@ export function Dashboard({
   useEffect(() => {
     if (visualizationLayers?.length) {
       setOpenDrawer(true);
+      setShowLegend(true);
     } else {
       setOpenDrawer(false);
+      setShowLegend(false);
     }
   }, [JSON.stringify(visualizationLayers)]);
 
   const handleDateRangeChange = (dateRange) => {
     if (!coverage) return;
     const filteredCoverages = filterByDateRange(coverage, dateRange);
+    const newItems = filterVizItems(dateRange, vizItems);
+    setFilteredVizItems(newItems);
     setCoverageFeatures(filteredCoverages);
   };
 
@@ -192,41 +238,108 @@ export function Dashboard({
     }
   };
 
+  const markerItems = useMemo(() => {
+    return Object.keys(filteredVizItems).map((item) => {
+      const v = filteredVizItems[item];
+      const plumeProperties = v?.plumeProperties;
+      return {
+        coordinates: {
+          lat: v?.lat,
+          lon: v?.lon,
+        },
+        location: plumeProperties?.location,
+        utcTimeObserved: plumeProperties?.utcTimeObserved,
+        id: item,
+        plumeId: plumeProperties?.plumeId,
+      };
+    });
+  }, [filteredVizItems]);
+
   return (
-    <Box className='fullSize'>
+    <div className='fullSize'>
       <div id='dashboard-map-container'>
         <MainMap>
-          <Paper className='title-container'>
-            <Title title={TITLE} description={DESCRIPTION} />
-            <div className='title-content'>
-              <HorizontalLayout>
-                <Search
-                  setFromSearch={setFromSearch}
-                  vizItems={Object.keys(filteredVizItems).map(
-                    (key) => filteredVizItems[key]
-                  )}
-                  onSelectedVizItemSearch={handleSelectedVizItemSearch}
-                ></Search>
-              </HorizontalLayout>
-              <HorizontalLayout>
-                <FilterByDate
-                  vizItems={Object.keys(vizItems).map((key) => vizItems[key])}
-                  onFilteredItems={handleFilterVizItems}
-                  onDateChange={handleDateRangeChange}
-                />
-              </HorizontalLayout>
-              <HorizontalLayout>
-                <ToggleSwitch
-                  title={'Show EMIT Coverages'}
-                  onToggle={handleCoverageToggle}
-                  initialState={showCoverage}
-                  enabled={enableToggle}
-                />
-              </HorizontalLayout>
-            </div>
-          </Paper>
+          <div className='dashboard-title-container'>
+            <Accordion
+              sx={{ position: 'relative', zIndex: 1 }}
+              defaultExpanded={expandAccordion}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                sx={{
+                  minHeight: '48px',
+                  '&.Mui-expanded': {
+                    minHeight: '48px',
+                  },
+                  '& .MuiAccordionSummary-content': {
+                    margin: '12px 0',
+                  },
+                  '& .MuiAccordionSummary-content.Mui-expanded': {
+                    margin: '12px 0',
+                  },
+                }}
+              >
+                <Typography
+                  variant='h5'
+                  component='div'
+                  fontWeight='bold'
+                  color='var(--main-grey)'
+                  className='accordion-title'
+                  sx={{ padding: '0 10px' }}
+                >
+                  {TITLE}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails
+                sx={{
+                  margin: '0 12px',
+                  padding: '0 0 20px 0',
+                  maxHeight: '70vh',
+                  overflowY: 'auto',
+                  position: 'relative',
+                  zIndex: 1
+                }}
+              >
+                {DESCRIPTION && (
+                  <Typography
+                    variant='body2'
+                    component='div'
+                    color='text.secondary'
+                    sx={{ marginBottom: '1rem', padding: '0 0.9rem' }}
+                  >
+                    {DESCRIPTION}
+                  </Typography>)}
+                <div className='title-content'>
+                  <HorizontalLayout>
+                    <Search
+                      setFromSearch={setFromSearch}
+                      vizItems={Object.keys(filteredVizItems).map(
+                        (key) => filteredVizItems[key]
+                      )}
+                      onSelectedVizItemSearch={handleSelectedVizItemSearch}
+                    ></Search>
+                  </HorizontalLayout>
+                  <HorizontalLayout>
+                    <FilterByDate
+                      filterDateRange={filterDateRange}
+                      onDateChange={handleDateRangeChange}
+                    />
+                  </HorizontalLayout>
+                  <HorizontalLayout>
+                    <ToggleSwitch
+                      title={'Show EMIT Coverage'}
+                      onToggle={handleCoverageToggle}
+                      initialState={showCoverage}
+                      enabled={enableToggle}
+                    />
+                  </HorizontalLayout>
+                </div>
+              </AccordionDetails>
+            </Accordion>
+          </div>
           <MapZoom zoomLocation={zoomLocation} zoomLevel={zoomLevel} />
           <MapControls
+            isDrawerActive={drawerActive}
             openDrawer={openDrawer}
             setOpenDrawer={setOpenDrawer}
             handleResetHome={handleResetHome}
@@ -240,18 +353,7 @@ export function Dashboard({
           ></MapViewPortComponent>
           <MarkerFeature
             getPopupContent={getPopupContent}
-            items={Object.keys(filteredVizItems).map((item) => {
-              const v = filteredVizItems[item];
-              return {
-                coordinates: {
-                  lat: v?.lat,
-                  lon: v?.lon,
-                },
-                location: v?.plumeProperties?.location,
-                utcTimeObserved: v?.plumeProperties?.utcTimeObserved,
-                id: item,
-              };
-            })}
+            items={markerItems}
             onSelectVizItem={handleSelectedVizItem}
           ></MarkerFeature>
           {showCoverage && <CoverageLayers coverage={coverageFeatures} />}
@@ -279,9 +381,9 @@ export function Dashboard({
         />
         )
       </div>
-      {VMAX && (
+      {VMAX && showLegend && (
         <ColorBar
-          label={'Methane Column Enhancement (mol/m²)'}
+          label={'Methane Enhancement (ppm m)'}
           VMAX={VMAX}
           VMIN={VMIN}
           colormap={colormap}
@@ -289,6 +391,6 @@ export function Dashboard({
         />
       )}
       {loadingData && <LoadingSpinner />}
-    </Box>
+    </div>
   );
 }

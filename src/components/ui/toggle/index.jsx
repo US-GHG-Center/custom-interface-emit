@@ -16,7 +16,7 @@ import './index.css';
  * @returns {JSX.Element}
  */
 
-const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
+export const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
   const [isChecked, setIsChecked] = useState(false);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
 
   return (
     <div className='toggle-container'>
-      <Typography variant='body2' gutterBottom>
+      <Typography sx={{ fontSize: "14px", color: "grey" }} variant='body2' gutterBottom>
         {title}
       </Typography>
       <label className='toggle-switch'>
@@ -51,4 +51,4 @@ const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
   );
 };
 
-export default ToggleSwitch;
+

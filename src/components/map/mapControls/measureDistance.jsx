@@ -16,12 +16,12 @@ import Tooltip from '@mui/material/Tooltip';
  */
 function MeasureButton({ icon: iconClicked, onClick }) {
   return (
-    <Tooltip title='Measurement Scale'>
+    <Tooltip title='Measure Tool'>
       <IconButton
         className='measure-icon map-control-icon'
         style={{
-          backgroundColor: !iconClicked ? '' : 'var(--main-blue)',
-          color: !iconClicked ? 'var(--main-blue)' : 'white',
+          backgroundColor: !iconClicked ? '' : '#2d2d2d',
+          color: !iconClicked ? '#2d2d2d' : 'white',
         }}
         onClick={onClick}
       >

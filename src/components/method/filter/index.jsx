@@ -1,24 +1,31 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Slider, Typography, Box } from '@mui/material';
 import moment from 'moment';
 /**
  * FilterByDate Component
  *
- * Provides an interactive slider to filter STAC items by observation date.
- * Displays the selected date range and emits filtered results on commit.
+ * Provides an interactive slider to  change the date range based on the position of slide
+ * Displays the selected date range and provides the callback on change event
  *
  * @param {Object} props
- * @param {Array<Object>} props.vizItems - Array of STACItems to filter.
- * @param {Function} props.onFilteredItems - Callback with filtered STACItems based on selected date range.
  * @param {Function} props.onDateChange - Callback to emit selected date range (in milliseconds).
+ * @param {Object} props.filterDateRange - Contains startDate & endDate for initial slider bounds.
  *
  * @returns {JSX.Element}
  */
+export function FilterByDate({ onDateChange, filterDateRange }) {
+  const minDate = filterDateRange?.startDate
+    ? moment(filterDateRange.startDate).valueOf()
+    : moment('2022-08-10')?.valueOf();
+  const maxDate = filterDateRange?.endDate
+    ? moment(filterDateRange?.endDate).valueOf()
+    : moment?.now()?.valueOf();
 
-export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
-  const minDate = moment('2022-08-09').valueOf();
-  const maxDate = moment().valueOf();
   const [dateRange, setDateRange] = useState([minDate, maxDate]);
+
+  useEffect(() => {
+    setDateRange([minDate, maxDate]);
+  }, [minDate, maxDate]);
 
   /**
    * Handles slider commit: filters data and emits range + results.
@@ -28,12 +35,6 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
    */
   const handleSliderChange = (_, dateRange) => {
     onDateChange(dateRange);
-    const filteredVizItems = vizItems.filter((vizItem) => {
-      const vizItemDate = moment(vizItem?.properties?.datetime).valueOf();
-      const item = vizItemDate >= dateRange[0] && vizItemDate <= dateRange[1];
-      return item;
-    });
-    onFilteredItems(filteredVizItems);
   };
 
   return (
@@ -50,10 +51,13 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
           marginBottom: '0px',
           display: 'flex',
           justifyContent: 'center',
+          fontFamily: "Public sans",
+          fontSize: "14px",
+          color: "#808080"
         }}
       >
-        {moment(dateRange[0]).format('ddd, DD MMM YYYY')} -{' '}
-        {moment(dateRange[1]).format('ddd, DD MMM YYYY')}
+        {moment(dateRange[0]).format('ddd, MMM DD YYYY')} -{' '}
+        {moment(dateRange[1]).format('ddd, MMM DD YYYY')}
       </Typography>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <Slider
@@ -70,25 +74,26 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
             display: 'flex',
             height: '8px',
             '& .MuiSlider-track': {
-              backgroundColor: '#082A63',
+              backgroundColor: '#eeeeee',
               height: '14px',
-              borderRadius: '1px',
+              borderRadius: '4px',
+              border: '1px solid #cfcfcf',
             },
             '& .MuiSlider-rail': {
               backgroundColor: '#ffffff',
               height: '14px',
               borderRadius: '3px',
-              border: '1px solid #aaaaaa',
+              border: '1px solid #808080',
             },
             '& .MuiSlider-thumb': {
               width: '22px',
               height: '26px',
-              backgroundColor: '#fffffe',
-              border: '1px solid #eeeeee',
+              backgroundColor: '#ffffff',
+              border: '1px solid #ffffff',
               borderRadius: 2,
               boxShadow: '0 0 0px rgba(0,0,0,0.2)',
               '&:hover': {
-                boxShadow: '0 0 8px rgba(0,0,0,0.3)',
+                boxShadow: '0 0 5px rgba(0,0,0,0.3)',
               },
             },
           }}
@@ -97,7 +102,10 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
         <div
           style={{
             display: 'flex',
-            margin: '-4px',
+            margin: '2px',
+            fontFamily: "Public sans",
+            color: "#808080",
+            fontSize: "14px",
             justifyContent: 'space-between',
           }}
         >
@@ -108,6 +116,7 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
               marginBottom: '0px',
               display: 'flex',
               justifyContent: 'center',
+              fontSize: "12px",
             }}
           >
             Start Date
@@ -120,6 +129,7 @@ export function FilterByDate({ vizItems, onFilteredItems, onDateChange }) {
 
               display: 'flex',
               justifyContent: 'center',
+              fontSize: "12px",
             }}
           >
             End Date

@@ -1,100 +1,152 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Dashboard } from '../dashboard/index.jsx';
 
+import { Dashboard } from '../dashboard/index.jsx';
 import {
   fetchCollectionMetadata,
   fetchAllFromSTACAPI,
   fetchData,
   getCoverageData,
 } from '../../services/api.js';
-import { transformMetadata } from './helper/dataTransform.ts';
-import { createIndexedCoverageData } from './helper/dataTransform.ts';
+import {
+  transformMetadata,
+  createIndexedCoverageData,
+} from '../../utils/dataTransform.ts';
+
+import { useConfig } from '../../context/configContext/index.jsx';
 
 /**
  * DashboardContainer Component
  *
- * Responsible for initializing and loading required data for the Dashboard.
- * This includes:
- *  - Fetching STAC metadata and transforming it to internal plume structure.
- *  - Fetching and indexing coverage data.
- *  - Managing map zoom state from URL query parameters.
+ * A reusable component that provides the EMIT Methane Plume Viewer interface.
+ * This component handles data fetching, state management, and rendering of the dashboard.
  *
  * @component
- * @returns {JSX.Element} Rendered Dashboard component
+ * @param {Object} props
+ * @param {string} [props.collectionId] - The STAC collection ID to fetch data from
+ * @param {Array<number>} [props.zoomLocation] - Initial zoom location [lon, lat]
+ * @param {number} [props.zoomLevel] - Initial zoom level
+ * @returns {JSX.Element} The rendered EMIT interface
  */
-export function DashboardContainer() {
+export const DashboardContainer = ({
+  collectionId,
+  defaultZoomLocation,
+  defaultZoomLevel,
+  defaultStartDate,
+}) => {
   // get the query params
   const [searchParams] = useSearchParams();
-  const [coverage, setCoverage] = useState();
-  const [zoomLocation, setZoomLocation] = useState(
-    searchParams.get('zoom-location') || []
-  ); // let default zoom location be controlled by map component
-  const [zoomLevel, setZoomLevel] = useState(
-    searchParams.get('zoom-level') || null
-  ); // let default zoom level be controlled by map component
-  const [collectionId] = useState(
-    searchParams.get('collection-id') || 'emit-ch4plume-v1'
-  );
+  const { config } = useConfig();
+  const isSimpleView = searchParams.get('viewMode') === 'simple';
 
+  // Parse zoom location from search params (format: ?zoomLocation=-40,5)
+  const getZoomLocationFromParams = () => {
+    const zoomLocationParam = searchParams.get('zoomLocation');
+    if (zoomLocationParam) {
+      const coords = zoomLocationParam.split(',').map(Number);
+      if (coords.length === 2 && !coords.some(isNaN)) {
+        return coords;
+      }
+    }
+    return defaultZoomLocation;
+  };
+
+  // Parse zoom level from search params (format: ?zoomLevel=1)
+  const getZoomLevelFromParams = () => {
+    const zoomLevelParam = searchParams.get('zoomLevel');
+    if (zoomLevelParam) {
+      const level = Number(zoomLevelParam);
+      if (!isNaN(level)) {
+        return level;
+      }
+    }
+    return defaultZoomLevel;
+  };
+
+  const [coverage, setCoverage] = useState();
+  const [zoomLocation, setZoomLocation] = useState(getZoomLocationFromParams());
+  const [zoomLevel, setZoomLevel] = useState(getZoomLevelFromParams());
   const [collectionMeta, setCollectionMeta] = useState({});
   const [plumes, setPlumes] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [filterDateRange, setFilterDateRange] = useState({});
 
+  // Fetch collection metadata and plumes data
   useEffect(() => {
+    let isMounted = true;
     setLoadingData(true);
+
     const init = async () => {
       try {
-        // // fetch in the collection from the features api
-        const collectionUrl = `${process.env.REACT_APP_BASE_STAC_API_URL}/collections/${collectionId}`;
-        // // use this url to find out the data frequency of the collection
+        const collectionUrl = `${config.stacApiUrl}/collections/${collectionId}`;
         const collectionMetadata = await fetchCollectionMetadata(collectionUrl);
+
+        if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
-
-        const metaDataEndpoint = `${process.env.REACT_APP_METADATA_ENDPOINT}`;
-        const stacAPIEndpoint = `${process.env.REACT_APP_STAC_API_URL}`;
-        // get all the metadata items
-        const metadata = await fetchData(metaDataEndpoint);
-        // get all the stac Items
-        const stacData = await fetchAllFromSTACAPI(stacAPIEndpoint);
-
-        // transform the data
-        const { data } = await transformMetadata(metadata, stacData);
+        let metadata = await fetchData(config.metadataEndpoint);
+        if (!metadata || !metadata.features.length) {
+          metadata = await fetchData(config.fallbackMetadataEndpoint);
+        }
+        const url = `${config.stacApiUrl}/collections/${collectionId}/items`;
+        const stacData = await fetchAllFromSTACAPI(url);
+        if (!isMounted) return;
+        const { data, latestPlume } = await transformMetadata(
+          metadata,
+          stacData,
+          config
+        );
         setPlumes(data);
-
-        // remove loading
+        setFilterDateRange({
+          startDate: defaultStartDate,
+          endDate: latestPlume?.properties?.datetime,
+        });
         setLoadingData(false);
       } catch (error) {
         console.error('Error fetching data:', error);
+        if (isMounted) {
+          setLoadingData(false);
+        }
       }
     };
 
-    init().catch(console.error);
-  }, []); // only on initial mount
+    init();
 
-  // Fetch coverage separately in the background
+    return () => {
+      isMounted = false;
+    };
+  }, [collectionId, defaultZoomLocation, defaultZoomLevel, defaultStartDate]);
+
+  // Fetch coverage data
+  //TODO:fetch data with bounding box and dates as parameters
   useEffect(() => {
     let isMounted = true;
     const fetchCoverage = async () => {
       try {
-        const coverageUrl = process.env.REACT_APP_COVERAGE_URL;
-        // const coverageUrl = `${process.env.PUBLIC_URL}/data/coverages.json`;
-        const coverageData = await getCoverageData(coverageUrl);
+        const now = new Date()
+        const formattedDate = now.toISOString();
+        const endpoint = `${config?.coverageUrl}?layer=coverage&type=geojson&maxy=83.87025634393777&maxx=213.4849548339844&miny=-74.30066604346104&minx=-176.74942016601565&crsCode=3857&zoom=2&starttime=2022-08-10T01%3A21%3A48.895Z&startProp=start_time&endProp=end_time`
+        const url = `${endpoint}&endtime=${formattedDate}`
+        let coverageData = await getCoverageData(url);
+        if (!coverageData || !coverageData.features.length) {
+          coverageData = await getCoverageData(config.fallbackCoverageEndpoint)
+        }
+        if (!isMounted) return;
+
         const indexedCoverageData = createIndexedCoverageData(coverageData);
-        // const coverageData = coverages;
-        if (isMounted && coverageData?.features?.length > 0) {
+        if (coverageData?.features?.length > 0) {
           setCoverage(indexedCoverageData);
         }
       } catch (error) {
-        console.error('Error fetching coverage data:', error);
+        // console.error('Error fetching coverage data:', error);
+        setCoverage([])
       }
     };
 
     fetchCoverage();
     return () => {
-      isMounted = false; // Cleanup in case the component unmounts before fetch completes
+      isMounted = false;
     };
-  }, []);
+  }, [config.coverageUrl]);
 
   return (
     <Dashboard
@@ -105,8 +157,10 @@ export function DashboardContainer() {
       setZoomLocation={setZoomLocation}
       setZoomLevel={setZoomLevel}
       collectionMeta={collectionMeta}
+      filterDateRange={filterDateRange}
       collectionId={collectionId}
       loadingData={loadingData}
+      isSimpleView={isSimpleView}
     />
   );
-}
+};
