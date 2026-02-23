@@ -123,7 +123,6 @@ export const MeasurementLayer = ({
    * Handles activation and deactivation of layers, sources, and cursor style.
    */
   useEffect(() => {
-    if (!map || !map.isStyleLoaded()) return;
     if (map) {
       changeCursor(map, measurePoints, measureMode);
       if (measureMode) {
