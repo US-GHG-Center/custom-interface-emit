@@ -131,10 +131,15 @@ jobs:
 
       - name: Upload to S3
         run: |
+          echo "Syncing to s3://${{ vars.DEPLOYMENT_BUCKET }}${{ vars.PUBLIC_URL }}"
           aws s3 sync "./build" s3://${{ vars.DEPLOYMENT_BUCKET }}${{ vars.PUBLIC_URL }}/ --cache-control max-age=30,must-revalidate,s-maxage=604800 --delete
+      
+      - name: Calculate PUBLIC URL Parent Path
+        run: echo "PUBLIC_URL_PARENT=$(dirname '${{ vars.PUBLIC_URL }}')" >> $GITHUB_ENV
+
       - name: Request Invalidation to AWS Cloudfront
         uses: oneyedev/aws-cloudfront-invalidation@v1
         with:
           distribution-id: ${{secrets.CF_DISTRIBUTION_ID}}
           paths: |
-            ${{ vars.PUBLIC_URL }}
+            ${{ env.PUBLIC_URL_PARENT }}/*
