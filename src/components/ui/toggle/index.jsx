@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import './index.css';
 
 /**
@@ -33,9 +34,21 @@ export const ToggleSwitch = ({ title, onToggle, enabled, initialState }) => {
 
   return (
     <div className='toggle-container'>
-      <Typography sx={{ fontSize: "14px", color: "grey" }} variant='body2' gutterBottom>
-        {title}
-      </Typography>
+      <div className='toggle-title-wrapper'>
+        <Typography sx={{ fontSize: "14px", color: "grey", margin: 0 }} variant='body2'>
+          {title}
+        </Typography>
+        {!enabled && (
+          <CircularProgress
+            size={14}
+            thickness={4}
+            sx={{
+              color: 'grey',
+              marginLeft: '8px'
+            }}
+          />
+        )}
+      </div>
       <label className='toggle-switch'>
         <input
           type='checkbox'
