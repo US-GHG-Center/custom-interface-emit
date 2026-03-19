@@ -221,11 +221,14 @@ export function Dashboard({
   }, [JSON.stringify(visualizationLayers)]);
 
   const handleDateRangeChange = (dateRange) => {
-    if (!coverage) return;
-    const filteredCoverages = filterByDateRange(coverage, dateRange);
-    const newItems = filterVizItems(dateRange, vizItems);
-    setFilteredVizItems(newItems);
-    setCoverageFeatures(filteredCoverages);
+    if (coverage?.features) {
+      const filteredCoverages = filterByDateRange(coverage, dateRange);
+      setCoverageFeatures(filteredCoverages);
+    }
+    if (vizItems) {
+      const newItems = filterVizItems(dateRange, vizItems);
+      setFilteredVizItems(newItems);
+    }
   };
 
   const handleCoverageToggle = (switchState) => {
