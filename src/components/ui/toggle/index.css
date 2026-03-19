@@ -47,7 +47,6 @@
 }
 
 .slider:after {
-  content: 'ON';
   color: white;
   font-size: 12px;
   font-weight: bold;
@@ -74,7 +73,6 @@
 
 /* "ON" Text */
 .slider::after {
-  content: 'ON';
   z-index: inherit;
   color: white;
   font-size: 10px;
