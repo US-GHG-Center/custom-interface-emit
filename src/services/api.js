@@ -1,14 +1,23 @@
 export const UNKNOWN = 'unknown';
 import lookupLocation from '../../static/locationLookup.json';
-export const fetchData = async (endpoint) => {
+export const fetchData = async (endpoint, timeout = 15000) => {
   try {
-    const response = await fetch(endpoint);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeout);
+
+    const response = await fetch(endpoint, { signal: controller.signal });
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      throw new Error('Error in Network');
+      throw new Error(`Error in Network: ${response.status} ${response.statusText}`);
     }
     return await response.json();
   } catch (err) {
-    console.warn('Error while getting data', err);
+    if (err.name === 'AbortError') {
+      console.warn(`Request timed out after ${timeout}ms for endpoint:`, endpoint);
+    } else {
+      console.warn('Error while getting data', err);
+    }
     return null;
   }
 };
@@ -22,8 +31,8 @@ export const fetchCollectionMetadata = async (collectionUrl) => {
   }
 };
 
-export const getCoverageData = async (url) => {
-  const coverageData = await fetchData(url);
+export const getCoverageData = async (url, timeout = 15000) => {
+  const coverageData = await fetchData(url, timeout);
   return coverageData;
 };
 

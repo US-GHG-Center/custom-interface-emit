@@ -126,19 +126,43 @@ export const DashboardContainer = ({
         const formattedDate = now.toISOString();
         const endpoint = `${config?.coverageUrl}?layer=coverage&type=geojson&maxy=83.87025634393777&maxx=213.4849548339844&miny=-74.30066604346104&minx=-176.74942016601565&crsCode=3857&zoom=2&starttime=2022-08-10T01%3A21%3A48.895Z&startProp=start_time&endProp=end_time`
         const url = `${endpoint}&endtime=${formattedDate}`
-        let coverageData = await getCoverageData(url);
-        if (!coverageData || !coverageData.features.length) {
-          coverageData = await getCoverageData(config.fallbackCoverageEndpoint)
+
+        // Try primary endpoint
+        let coverageData = null;
+        try {
+          coverageData = await getCoverageData(url);
+        } catch (primaryError) {
+          console.warn('Primary coverage endpoint error:', primaryError);
         }
+
+        // Try fallback if primary failed or returned no features
+        if (!coverageData || !coverageData.features || !coverageData.features.length) {
+          if (config.fallbackCoverageEndpoint) {
+            try {
+              coverageData = await getCoverageData(config.fallbackCoverageEndpoint);
+            } catch (fallbackError) {
+              console.warn('Fallback coverage endpoint error:', fallbackError);
+            }
+          } else {
+            console.warn('No fallback coverage endpoint configured');
+          }
+        }
+
         if (!isMounted) return;
 
-        const indexedCoverageData = createIndexedCoverageData(coverageData);
+        // Only process if there's valid coverage data
         if (coverageData?.features?.length > 0) {
+          const indexedCoverageData = createIndexedCoverageData(coverageData);
           setCoverage(indexedCoverageData);
+        } else {
+          console.warn('No coverage data available from any endpoint');
+          setCoverage([]);
         }
       } catch (error) {
-        // console.error('Error fetching coverage data:', error);
-        setCoverage([])
+        console.error('Error fetching coverage data:', error);
+        if (isMounted) {
+          setCoverage([]);
+        }
       }
     };
 
