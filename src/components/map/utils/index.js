@@ -223,15 +223,21 @@ export const addCoveragePolygon = (
       },
     });
 
-    // Ensure coverage layer stays below rasters
+    // Ensure coverage layer stays below raster and marker layers
     const layers = map.getStyle().layers;
-    // console.log({ layers });
     const rasterLayers = layers.filter((layer) =>
       layer.id.startsWith('raster-')
     );
+    const markerLayer = layers.find((layer) => layer.id === 'plume-markers-layer');
+
+    // Move coverage below the first raster layer if it exists
     if (rasterLayers.length > 0) {
-      const firstRasterLayerId = rasterLayers[0].id;
-      map.moveLayer(polygonLayerId, firstRasterLayerId);
+      map.moveLayer(polygonLayerId, rasterLayers[0].id);
+    }
+
+    // Then move coverage below the marker layer if it exists (ensuring markers are on top)
+    if (markerLayer) {
+      map.moveLayer(polygonLayerId, markerLayer.id);
     }
   }
 };
