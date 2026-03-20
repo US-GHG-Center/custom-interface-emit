@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useMemo, useCallback } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -86,6 +86,7 @@ export function Dashboard({
   const [visualizationLayers, setVisualizationLayers] = useState([]);
 
   const [showCoverage, setShowCoverages] = useState(false);
+  const [renderCoverage, setRenderCoverage] = useState(false);
   const [enableToggle, setEnableToggle] = useState(false);
   const [fromSearch, setFromSearch] = useState(false);
 
@@ -221,20 +222,38 @@ export function Dashboard({
   }, [JSON.stringify(visualizationLayers)]);
 
   const handleDateRangeChange = (dateRange) => {
-    if (!coverage) return;
-    const filteredCoverages = filterByDateRange(coverage, dateRange);
-    const newItems = filterVizItems(dateRange, vizItems);
-    setFilteredVizItems(newItems);
-    setCoverageFeatures(filteredCoverages);
+    const isRenderingCoverage = showCoverage && renderCoverage;
+
+    // Only unmount if coverage was actually rendering
+    if (isRenderingCoverage) {
+      setRenderCoverage(false);
+    }
+
+    if (coverage?.features) {
+      const filteredCoverages = filterByDateRange(coverage, dateRange);
+      setCoverageFeatures(filteredCoverages);
+    }
+    if (vizItems) {
+      const newItems = filterVizItems(dateRange, vizItems);
+      setFilteredVizItems(newItems);
+    }
+    // Restore coverage layer after brief delay to force remount
+    if (isRenderingCoverage) {
+      setTimeout(() => {
+        setRenderCoverage(true);
+      }, 150);
+    }
   };
 
   const handleCoverageToggle = (switchState) => {
     setShowCoverages(switchState);
+    setRenderCoverage(switchState);
   };
 
   const handleHideLayers = (val) => {
     if (!val) {
       setShowCoverages(val);
+      setRenderCoverage(val);
     }
   };
 
@@ -356,7 +375,7 @@ export function Dashboard({
             items={markerItems}
             onSelectVizItem={handleSelectedVizItem}
           ></MarkerFeature>
-          {showCoverage && <CoverageLayers coverage={coverageFeatures} />}
+          {showCoverage && renderCoverage && <CoverageLayers coverage={coverageFeatures} />}
           (
           <Plumes
             vizItems={visualizationLayers}
