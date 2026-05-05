@@ -43,7 +43,9 @@ const reverseGeocoding = async (
   feature: Features,
   config: EmitInterfaceConfig
 ): Promise<string> => {
-  const id = feature?.properties['Plume ID'];
+  if (!feature || !feature.properties) return '';
+
+  const id = feature.properties['Plume ID'];
   if (!allLocation) return '';
   const locationFromLookup = allLocation[id];
   if (locationFromLookup !== undefined && locationFromLookup !== UNKNOWN) {
@@ -84,6 +86,8 @@ export const transformMetadata = async (
   const metaFeatures = getResultArray(metaData);
   const allLocation: Record<string, string> =  getAllLocation();
 
+  console.log('Metadata:', metaData);
+
   const polygonLookup = new Map<string, Features>();
   let pointLookup = new Map<string, Features>();
 
@@ -97,6 +101,7 @@ export const transformMetadata = async (
       polygonLookup.set(id, feature);
     } else if (feature.geometry.type === 'Point') {
       pointLookup.set(id, feature);
+      console.log(`Added point feature to lookup with id ${id}:`, feature);
     }
   }
   const sortedData = stacData.sort((prev: STACItem, next: STACItem): number => {
@@ -110,6 +115,10 @@ export const transformMetadata = async (
   sortedData.forEach(async (item: STACItem) => {
     const id = item.id;
     const pointInfo: Features = pointLookup.get(id) as Features;
+    console.log(`Looking up point feature for STAC item ${id}:`, pointInfo);
+    if (pointInfo) {
+      console.log(`Found point feature for STAC item ${id}:`, pointInfo);
+    }
     const polygonInfo: Features = polygonLookup.get(id) as Features;
     const location =
       (await reverseGeocoding(allLocation, pointInfo as Features, config)) ??
@@ -144,6 +153,10 @@ export const transformMetadata = async (
       pointInfo?.geometry?.type === 'Point'
         ? (pointInfo.geometry.coordinates as number[])[1]
         : undefined;
+
+    if (pointInfo) {
+      console.log(`Processing STAC item ${id} with associated point feature. Extracted lat: ${lat}, lon: ${lon}, location: ${location}`);
+    }
     plumes[id] = {
       id: item.id,
       bbox: item.bbox,

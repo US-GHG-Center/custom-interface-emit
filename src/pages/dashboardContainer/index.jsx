@@ -83,7 +83,12 @@ export const DashboardContainer = ({
 
         if (!isMounted) return;
         setCollectionMeta(collectionMetadata);
-        let metadata = await fetchData(config.metadataEndpoint);
+
+        // Primary metadata endpoint has been updated causing metadata mismatches with the STAC API items
+        // We are using the fallback metadata endpoint for now.
+
+        // let metadata = await fetchData(config.metadataEndpoint);
+        let metadata = null;
         if (!metadata || !metadata.features.length) {
           metadata = await fetchData(config.fallbackMetadataEndpoint);
         }
