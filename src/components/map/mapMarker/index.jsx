@@ -51,13 +51,6 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
     if (!map) return;
 
     const addMapElements = () => {
-      // DEBUG: remove before merge
-      console.log('[EMIT-DEBUG] addMapElements fired', {
-        styleLoaded: map.isStyleLoaded(),
-        geoJsonFeatures: geoJsonData.features.length,
-        imageAlreadyRegistered: map.hasImage(MARKER_IMAGE_ID),
-      });
-
       // 1. Load Marker Image
       if (!map.hasImage(MARKER_IMAGE_ID)) {
         const markerColor = '#61baf1ff';
@@ -68,15 +61,7 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
           if (!map.hasImage(MARKER_IMAGE_ID)) {
             map.addImage(MARKER_IMAGE_ID, img);
           }
-          // DEBUG: remove before merge — if this logs AFTER "layer added",
-          // the symbol layer was created without its icon (race).
-          console.log('[EMIT-DEBUG] marker icon onload -> addImage', {
-            layerExistsAlready: !!map.getLayer(LAYER_ID),
-            imgSize: [img.width, img.height],
-          });
         };
-        img.onerror = (e) =>
-          console.error('[EMIT-DEBUG] marker icon FAILED to load', e);
         img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
       }
 
@@ -101,36 +86,10 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
             'visibility': 'visible',
           },
         });
-        // DEBUG: remove before merge
-        console.log('[EMIT-DEBUG] layer added', {
-          iconRegisteredAtLayerAdd: map.hasImage(MARKER_IMAGE_ID),
-          sourceFeatureCount: geoJsonData.features.length,
-        });
       }
-
-      // DEBUG: remove before merge — what actually made it onto the map
-      map.once('idle', () => {
-        console.log('[EMIT-DEBUG] map idle — marker render state', {
-          hasIcon: map.hasImage(MARKER_IMAGE_ID),
-          layerVisibility: map.getLayer(LAYER_ID)
-            ? map.getLayoutProperty(LAYER_ID, 'visibility')
-            : 'NO LAYER',
-          zoom: map.getZoom(),
-          zoomMargin: ZOOM_LEVEL_MARGIN,
-          sourceLoaded: map.isSourceLoaded(SOURCE_ID),
-          tiledFeatures: map.querySourceFeatures(SOURCE_ID).length,
-          renderedFeatures: map.queryRenderedFeatures({ layers: [LAYER_ID] })
-            .length,
-        });
-      });
     };
 
     map.on('style.load', addMapElements);
-    // DEBUG: remove before merge — if the style is already loaded when this
-    // effect runs, 'style.load' never fires again and nothing gets added.
-    console.log('[EMIT-DEBUG] registered style.load handler', {
-      styleAlreadyLoaded: map.isStyleLoaded(),
-    });
 
     // Cleanup function when component unmounts
     return () => {
@@ -145,18 +104,6 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
 
   // Update Source Data when items change
   useEffect(() => {
-    // DEBUG: remove before merge
-    console.log('[EMIT-DEBUG] items -> geoJson', {
-      items: items?.length ?? 0,
-      features: geoJsonData.features.length,
-      sourceExists: !!(map && map.getSource(SOURCE_ID)),
-      firstCoords: geoJsonData.features[0]?.geometry?.coordinates,
-      badCoords: geoJsonData.features.filter((f) => {
-        const c = f.geometry?.coordinates;
-        return !c || typeof c[0] !== 'number' || typeof c[1] !== 'number' ||
-          Number.isNaN(c[0]) || Number.isNaN(c[1]);
-      }).length,
-    });
     if (map && map.getSource(SOURCE_ID)) {
       map.getSource(SOURCE_ID).setData(geoJsonData);
     }
@@ -199,14 +146,6 @@ export const MarkerFeature = ({ items, onSelectVizItem, getPopupContent }) => {
     // Click Handler
     const onClick = (e) => {
       const features = map.queryRenderedFeatures(e.point, { layers: [LAYER_ID] });
-      // DEBUG: remove before merge
-      console.log('[EMIT-DEBUG] marker click', {
-        hits: features.length,
-        id: features[0]?.properties?.id,
-        plumeId: features[0]?.properties?.plumeId,
-        location: features[0]?.properties?.location,
-        willCallOnSelect: !!(features[0]?.properties?.id && onSelectVizItem),
-      });
       if (features.length > 0) {
         const feature = features[0];
         // Stop propagation conceptually (Mapbox event)

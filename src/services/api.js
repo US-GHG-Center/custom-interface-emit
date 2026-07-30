@@ -108,14 +108,6 @@ export const fetchAllFromSTACAPI = async (STACApiUrl) => {
     // deployments report the deprecated `context` extension instead.
     const matched = jsonResult.numberMatched ?? jsonResult.context?.matched;
     const returned = jsonResult.numberReturned ?? jsonResult.context?.returned;
-    // DEBUG: remove before merge
-    console.log('[EMIT-DEBUG] STAC envelope', {
-      url: STACApiUrl,
-      matched,
-      returned,
-      envelope: jsonResult.numberMatched !== undefined ? 'numberMatched' : 'context',
-      topLevelKeys: Object.keys(jsonResult),
-    });
     // if there are more data remaining fetch all
     if (matched > returned) {
       let allData = await fetchAllDataSTAC(STACApiUrl, matched);
@@ -154,14 +146,6 @@ const fetchAllDataSTAC = async (STACApiUrl, numberMatched) => {
         `STAC pagination incomplete: got ${allData.length} of ${numberMatched} items from ${STACApiUrl}`
       );
     }
-    // DEBUG: remove before merge
-    console.log('[EMIT-DEBUG] STAC pagination complete', {
-      fetched: allData.length,
-      expected: numberMatched,
-      complete: allData.length === numberMatched,
-      firstId: allData[0]?.id,
-      lastId: allData[allData.length - 1]?.id,
-    });
     return allData;
   } catch (error) {
     console.error('Error fetching data:', error);

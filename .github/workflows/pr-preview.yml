@@ -35,9 +35,6 @@ jobs:
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
       - name: Validate required variables and secrets
         run: |
           missing_vars=()
@@ -92,8 +89,8 @@ jobs:
           REACT_APP_FALLBACK_COVERAGE_ENDPOINT: ${{vars.REACT_APP_FALLBACK_COVERAGE_ENDPOINT}}
           REACT_APP_BANNER_MESSAGE: ${{ vars.REACT_APP_BANNER_MESSAGE }}
         run: |
-          yarn
-          CI=false  yarn build
+          npm ci
+          CI=false npm run build
           aws s3 sync build/ s3://$DEPLOYMENT_BUCKET$PUBLIC_URL
           COMMENT+="- 🛰️ PR Preview: ${{ vars.PREVIEW_WEB_DISTRIBUTION_URL }}$PUBLIC_URL \n \n"
           echo "COMMENT=${COMMENT}" >> $GITHUB_ENV

@@ -42,9 +42,6 @@ jobs:
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
       - name: Validate required variables and secrets
         run: |
           missing_vars=()
@@ -94,8 +91,8 @@ jobs:
           REACT_APP_BANNER_MESSAGE: ${{ vars.REACT_APP_BANNER_MESSAGE }}
 
         run: |
-          yarn
-          CI=false yarn build
+          npm ci
+          CI=false npm run build
       - name: Upload dist folder
         uses: actions/upload-artifact@v4
         with:
