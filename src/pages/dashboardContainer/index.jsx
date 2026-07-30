@@ -95,6 +95,23 @@ export const DashboardContainer = ({
           stacData,
           config
         );
+        // DEBUG: remove before merge
+        const plumeList = Object.values(data);
+        const withProps = plumeList.filter(
+          (p) => p?.plumeProperties?.plumeId !== undefined
+        );
+        console.log('[EMIT-DEBUG] data pipeline', {
+          collectionId,
+          stacApiUrl: config.stacApiUrl,
+          rasterApiUrl: config.rasterApiUrl,
+          stacItems: stacData?.length,
+          metadataFeatures: metadata?.features?.length,
+          plumesBuilt: plumeList.length,
+          plumesWithMetadataJoin: withProps.length,
+          plumesMissingJoin: plumeList.length - withProps.length,
+          latestPlumeDatetime: latestPlume?.properties?.datetime,
+          samplePlume: plumeList[0],
+        });
         setPlumes(data);
         setFilterDateRange({
           startDate: defaultStartDate,
