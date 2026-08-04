@@ -98,7 +98,6 @@ export const fetchAllFromSTACAPI = async (STACApiUrl) => {
   // it will fetch all collection items from all stac api.
   // do not provide offset and limits in the url
   try {
-    let requiredResult = [];
     // fetch in the collection from the stac api
     const jsonResult = await fetchData(STACApiUrl);
     if (!jsonResult) return [];
@@ -113,7 +112,8 @@ export const fetchAllFromSTACAPI = async (STACApiUrl) => {
       let allData = await fetchAllDataSTAC(STACApiUrl, matched);
       return allData;
     }
-    return requiredResult;
+    // everything came back in this single response
+    return getResultArray(jsonResult);
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];
