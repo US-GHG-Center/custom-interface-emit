@@ -140,6 +140,18 @@ export function Dashboard({
   const handleClickedVizLayer = (vizLayerId) => {
     if (!vizItems || !vizLayerId) return;
     setClickedOnLayer([vizLayerId]);
+
+    const vizItem =
+      filteredVizItems[vizLayerId] ||
+      visualizationLayers?.find((item) => item?.id === vizLayerId);
+    if (!vizItem) return;
+    const location =
+      vizItem?.lon !== undefined && vizItem?.lat !== undefined
+        ? [vizItem.lon, vizItem.lat]
+        : vizItem?.polygonGeometry?.coordinates?.[0]?.[0];
+    if (!location) return;
+    setZoomLocation(location);
+    setZoomLevel(RASTER_ZOOM_LEVEL);
   };
 
   const handleZoomOutEvent = (zoom) => {

@@ -8,7 +8,7 @@ import {
 
 /**
  * Component responsible for rendering methane plume layers on the map.
- * It handles dynamic loading, highlighting, visibility toggling, and removal of layers.
+ * It handles dynamic loading, highlighting, and removal of layers.
  *
  * @component
  * @param {Object} props
@@ -37,27 +37,6 @@ function Plumes({
   useEffect(() => {
     setPlumeLayers(vizItems);
   }, [vizItems]);
-  /**
-   * Toggles visibility of the raster layer when a polygon is clicked.
-   * @param {string} layerId - The ID of the layer to toggle.
-   */
-  const handleClickedOnLayer = (layerId) => {
-    if (layerId) {
-      const rasterId = getLayerId('raster', layerId);
-      if (map?.getLayer(rasterId)) {
-        const visibility = map.getLayoutProperty(
-          rasterId,
-          'visibility',
-          'none'
-        );
-        if (visibility === 'none') {
-          map.setLayoutProperty(rasterId, 'visibility', 'visible');
-        } else if (visibility === 'visible') {
-          map.setLayoutProperty(rasterId, 'visibility', 'none');
-        }
-      }
-    }
-  };
   /**
    * Removes raster, polygon, and fill layers and their sources from the map.
    * @param {string} vizItemId - ID of the plume item to remove.
@@ -125,7 +104,6 @@ function Plumes({
       assets={assets}
       onHoverOverLayer={onHoverOverLayer}
       highlightedLayer={highlightedLayer}
-      onClickedOnLayer={handleClickedOnLayer}
       handleRemoveLayer={handleRemoveLayer}
     />
   );
