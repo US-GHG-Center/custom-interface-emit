@@ -67,35 +67,40 @@ function Plumes({
   useEffect(() => {
     if (!map) return;
 
-    if (highlightedLayer) {
-      const polygonId = getLayerId('polygon', highlightedLayer);
-      const rasterId = getLayerId('raster', highlightedLayer);
-
-      // Highlight the polygon layer by increasing its line width
-      if (map.getLayer(polygonId)) {
-        map.setPaintProperty(polygonId, 'line-width', 5);
-      }
-
-      // Move the raster layer below the polygon layer for visibility
-      if (map.getLayer(rasterId) && map.getLayer(polygonId)) {
-        map.moveLayer(rasterId, polygonId);
-      }
-    } else {
-      const mapLayers = map.getStyle().layers;
+    if (!highlightedLayer) {
+      // Safety net: revert anything left highlighted by an earlier interaction.
+      const mapLayers = map.getStyle()?.layers;
       const polygonLayers = mapLayers?.filter((item) =>
         item?.id?.includes('polygon-')
       );
-      const highlightedLayer = polygonLayers?.filter(
-        (item) => item?.paint['line-width'] === 5
-      );
-
-      // Revert the previously highlighted layer back to normal line width
-      highlightedLayer &&
-        highlightedLayer?.forEach((item) =>
-          map.setPaintProperty(item.id, 'line-width', 2)
-        );
+      polygonLayers
+        ?.filter((item) => item?.paint['line-width'] === 5)
+        ?.forEach((item) => map.setPaintProperty(item.id, 'line-width', 2));
+      return;
     }
-  }, [highlightedLayer]);
+
+    const polygonId = getLayerId('polygon', highlightedLayer);
+    const rasterId = getLayerId('raster', highlightedLayer);
+
+    // Highlight the polygon layer by increasing its line width
+    if (map.getLayer(polygonId)) {
+      map.setPaintProperty(polygonId, 'line-width', 5);
+    }
+
+    // Move the raster layer below the polygon layer for visibility
+    if (map.getLayer(rasterId) && map.getLayer(polygonId)) {
+      map.moveLayer(rasterId, polygonId);
+    }
+
+    // Runs before the next highlight is applied, so a plume is un-highlighted
+    // even when the hover moves straight from one plume to another (scrolling
+    // the card list batches the leave/enter into a single update).
+    return () => {
+      if (map.getLayer(polygonId)) {
+        map.setPaintProperty(polygonId, 'line-width', 2);
+      }
+    };
+  }, [map, highlightedLayer]);
 
   return (
     <VisualizationLayers
