@@ -23,16 +23,13 @@ const HorizontalLayout = styled.div`
 
 const HighlightableCard = styled(Card)`
   transition: border 0.3s ease;
+  box-shadow: none;
   &:hover {
     border: 1px solid blue;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
   border: ${(props) =>
     //eslint-disable-next-line prettier/prettier
     props.$isHovered ? '1px solid #4866ff' : '1px solid transparent'};
-  box-shadow: ${(props) =>
-    //eslint-disable-next-line prettier/prettier
-    props.$isHovered ? '0 4px 20px rgba(0, 0, 0, 0.2)' : 'none'};
 `;
 
 const CaptionValue = ({ caption, value, className }) => {
