@@ -19,6 +19,7 @@ import {
  * @param {Array<Plume>} props.vizItems - Array of plume items to render.
  * @param {string} props.highlightedLayer - ID of the plume currently hovered.
  * @param {function} props.onHoverOverLayer - Callback triggered when a plume layer is hovered.
+ * @param {function} props.onHoverOutOfLayer - Callback triggered when the hover leaves a plume layer.
  */
 
 function Plumes({
@@ -29,6 +30,7 @@ function Plumes({
   vizItems,
   highlightedLayer,
   onHoverOverLayer,
+  onHoverOutOfLayer,
 }) {
   const { map } = useMapbox();
 
@@ -103,6 +105,7 @@ function Plumes({
       colormap={colormap}
       assets={assets}
       onHoverOverLayer={onHoverOverLayer}
+      onHoverOutOfLayer={onHoverOutOfLayer}
       highlightedLayer={highlightedLayer}
       handleRemoveLayer={handleRemoveLayer}
     />

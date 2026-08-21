@@ -200,6 +200,12 @@ export function Dashboard({
     setHoveredVizLayerId(vizItemId);
   }, []);
 
+  // A plume's `mouseleave` can arrive after the next plume's `mouseenter`, so
+  // clear only if the plume being left is still the hovered one.
+  const handleUnhoveredVizLayer = useCallback((vizItemId) => {
+    setHoveredVizLayerId((current) => (current === vizItemId ? '' : current));
+  }, []);
+
   // Component Effects
   useEffect(() => {
     if (!plumes) return;
@@ -396,6 +402,7 @@ export function Dashboard({
             colormap={colormap}
             assets={assets}
             onHoverOverLayer={handleHoveredVizLayer}
+            onHoverOutOfLayer={handleUnhoveredVizLayer}
             highlightedLayer={hoveredVizLayerId}
           />
           )
