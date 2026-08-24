@@ -69,14 +69,28 @@ function Plumes({
 
     if (!highlightedLayer) {
       // Safety net: revert anything left highlighted by an earlier interaction.
-      const mapLayers = map.getStyle()?.layers;
-      const polygonLayers = mapLayers?.filter((item) =>
-        item?.id?.includes('polygon-')
-      );
-      polygonLayers
-        ?.filter((item) => item?.paint['line-width'] === 5)
-        ?.forEach((item) => map.setPaintProperty(item.id, 'line-width', 2));
-      return;
+      const revertHighlightedLayers = () => {
+        const mapLayers = map.getStyle()?.layers;
+        const polygonLayers = mapLayers?.filter((item) =>
+          item?.id?.includes('polygon-')
+        );
+        polygonLayers
+          ?.filter((item) => item?.paint?.['line-width'] === 5)
+          ?.forEach((item) => map.setPaintProperty(item.id, 'line-width', 2));
+      };
+
+      // `map.getStyle()` throws while the style is still loading, and the map
+      // is handed to us as soon as it is constructed - so on a cold mount the
+      // sweep has to wait for the style before it can read the layer list.
+      if (map.isStyleLoaded()) {
+        revertHighlightedLayers();
+        return;
+      }
+
+      map.once('style.load', revertHighlightedLayers);
+      return () => {
+        map.off('style.load', revertHighlightedLayers);
+      };
     }
 
     const polygonId = getLayerId('polygon', highlightedLayer);
