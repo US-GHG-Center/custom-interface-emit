@@ -24,6 +24,7 @@ const HorizontalLayout = styled.div`
 const HighlightableCard = styled(Card)`
   transition: border 0.3s ease;
   box-shadow: none;
+  cursor: pointer;
   &:hover {
     border: 1px solid blue;
   }
