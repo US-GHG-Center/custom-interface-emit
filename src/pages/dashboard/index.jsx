@@ -140,6 +140,18 @@ export function Dashboard({
   const handleClickedVizLayer = (vizLayerId) => {
     if (!vizItems || !vizLayerId) return;
     setClickedOnLayer([vizLayerId]);
+
+    const vizItem =
+      filteredVizItems[vizLayerId] ||
+      visualizationLayers?.find((item) => item?.id === vizLayerId);
+    if (!vizItem) return;
+    const location =
+      vizItem?.lon !== undefined && vizItem?.lat !== undefined
+        ? [vizItem.lon, vizItem.lat]
+        : vizItem?.polygonGeometry?.coordinates?.[0]?.[0];
+    if (!location) return;
+    setZoomLocation(location);
+    setZoomLevel(RASTER_ZOOM_LEVEL);
   };
 
   const handleZoomOutEvent = (zoom) => {
@@ -186,6 +198,12 @@ export function Dashboard({
 
   const handleHoveredVizLayer = useCallback((vizItemId) => {
     setHoveredVizLayerId(vizItemId);
+  }, []);
+
+  // A plume's `mouseleave` can arrive after the next plume's `mouseenter`, so
+  // clear only if the plume being left is still the hovered one.
+  const handleUnhoveredVizLayer = useCallback((vizItemId) => {
+    setHoveredVizLayerId((current) => (current === vizItemId ? '' : current));
   }, []);
 
   // Component Effects
@@ -384,6 +402,7 @@ export function Dashboard({
             colormap={colormap}
             assets={assets}
             onHoverOverLayer={handleHoveredVizLayer}
+            onHoverOutOfLayer={handleUnhoveredVizLayer}
             highlightedLayer={hoveredVizLayerId}
           />
           )

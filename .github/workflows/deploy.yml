@@ -42,9 +42,6 @@ jobs:
         with:
           node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
 
-      - name: Install Yarn
-        run: npm install -g yarn
-
       - name: Validate required variables and secrets
         run: |
           missing_vars=()
@@ -83,6 +80,7 @@ jobs:
           REACT_APP_STAC_API_URL: ${{ vars.REACT_APP_STAC_API_URL }}
           REACT_APP_MAPBOX_STYLE_URL: ${{vars.REACT_APP_MAPBOX_STYLE_URL}}
           REACT_APP_RASTER_API_URL: ${{ vars.REACT_APP_RASTER_API_URL }}
+          REACT_APP_COLLECTION_ID: ${{ vars.REACT_APP_COLLECTION_ID }}
           REACT_APP_METADATA_ENDPOINT: ${{ vars.REACT_APP_METADATA_ENDPOINT }}
           REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT: ${{ vars.REACT_APP_LAT_LON_TO_COUNTRY_ENDPOINT }}
           REACT_APP_COVERAGE_URL: ${{ vars.REACT_APP_COVERAGE_URL }}
@@ -93,8 +91,8 @@ jobs:
           REACT_APP_BANNER_MESSAGE: ${{ vars.REACT_APP_BANNER_MESSAGE }}
 
         run: |
-          yarn
-          CI=false yarn build
+          npm ci
+          CI=false npm run build
       - name: Upload dist folder
         uses: actions/upload-artifact@v4
         with:

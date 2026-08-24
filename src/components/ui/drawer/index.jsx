@@ -88,6 +88,8 @@ export function PersistentDrawerRight({
 }) {
   const [numberOfVizItems, setNumberOfVizItems] = useState(0);
   const highlightedCardRef = useRef(null);
+  // Only a hover coming from the map should scroll the list, not one from a card.
+  const isPointerInCardListRef = useRef(false);
 
   const handleDrawerClose = () => {
     setOpen(false);
@@ -102,6 +104,7 @@ export function PersistentDrawerRight({
   }, [selectedVizItems]);
 
   useEffect(() => {
+    if (isPointerInCardListRef.current) return;
     if (hoveredVizLayerId && highlightedCardRef.current) {
       highlightedCardRef.current.scrollIntoView({
         behavior: 'smooth',
@@ -155,7 +158,15 @@ export function PersistentDrawerRight({
             </Typography>
           </HorizontalLayout>
         </DrawerHeader>
-        <Box sx={{ flexGrow: 1, overflowY: 'auto' }}>
+        <Box
+          sx={{ flexGrow: 1, overflowY: 'auto' }}
+          onMouseEnter={() => {
+            isPointerInCardListRef.current = true;
+          }}
+          onMouseLeave={() => {
+            isPointerInCardListRef.current = false;
+          }}
+        >
           {selectedVizItems?.length ? (
             selectedVizItems?.map((selectedVizItem) => (
               <VisualizationItemCard

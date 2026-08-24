@@ -98,32 +98,55 @@ export const fetchAllFromSTACAPI = async (STACApiUrl) => {
   // it will fetch all collection items from all stac api.
   // do not provide offset and limits in the url
   try {
-    let requiredResult = [];
     // fetch in the collection from the stac api
     const jsonResult = await fetchData(STACApiUrl);
     if (!jsonResult) return [];
 
     // need to pull in remaining data based on the pagination information
-    const { matched, returned } = jsonResult.context;
+    // NOTE: newer stac-fastapi reports `numberMatched`/`numberReturned`; older
+    // deployments report the deprecated `context` extension instead.
+    const matched = jsonResult.numberMatched ?? jsonResult.context?.matched;
+    const returned = jsonResult.numberReturned ?? jsonResult.context?.returned;
     // if there are more data remaining fetch all
-    // API doesnot support offset so need to fetch all the data by setting the limit
     if (matched > returned) {
       let allData = await fetchAllDataSTAC(STACApiUrl, matched);
       return allData;
     }
-    return requiredResult;
+    // everything came back in this single response
+    return getResultArray(jsonResult);
   } catch (error) {
     console.error('Error fetching data:', error);
+    return [];
   }
 };
 
+// Requesting every item in a single page (limit=numberMatched) makes the STAC API
+// respond 500, so page through the results at a size it serves reliably.
+const STAC_PAGE_SIZE = 500;
+// Backstop so a malformed `next` link can never spin forever.
+const STAC_MAX_PAGES = 100;
+
 const fetchAllDataSTAC = async (STACApiUrl, numberMatched) => {
-  // NOTE: STAC API doesnot accept offset as a query params. So, need to pull all the items using limit.
+  // NOTE: STAC API doesnot accept offset as a query params. So, follow the `next` links.
   try {
-    const url = addOffsetsToURL(STACApiUrl, numberMatched);
-    const jsonResult = await fetchData(url);
-    if (!jsonResult) return [];
-    return getResultArray(jsonResult);
+    const allData = [];
+    let url = addOffsetsToURL(STACApiUrl, STAC_PAGE_SIZE);
+
+    for (let page = 0; url && page < STAC_MAX_PAGES; page += 1) {
+      const jsonResult = await fetchData(url);
+      if (!jsonResult) break;
+      const pageItems = getResultArray(jsonResult);
+      if (!pageItems.length) break;
+      allData.push(...pageItems);
+      url = jsonResult.links?.find((link) => link.rel === 'next')?.href;
+    }
+
+    if (allData.length !== numberMatched) {
+      console.warn(
+        `STAC pagination incomplete: got ${allData.length} of ${numberMatched} items from ${STACApiUrl}`
+      );
+    }
+    return allData;
   } catch (error) {
     console.error('Error fetching data:', error);
     return [];

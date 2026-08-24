@@ -23,16 +23,14 @@ const HorizontalLayout = styled.div`
 
 const HighlightableCard = styled(Card)`
   transition: border 0.3s ease;
+  box-shadow: none;
+  cursor: pointer;
   &:hover {
     border: 1px solid blue;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
   border: ${(props) =>
     //eslint-disable-next-line prettier/prettier
     props.$isHovered ? '1px solid #4866ff' : '1px solid transparent'};
-  box-shadow: ${(props) =>
-    //eslint-disable-next-line prettier/prettier
-    props.$isHovered ? '0 4px 20px rgba(0, 0, 0, 0.2)' : 'none'};
 `;
 
 const CaptionValue = ({ caption, value, className }) => {
@@ -100,7 +98,7 @@ export const VisualizationItemCard = forwardRef(
     const rasterApiUrl = config.rasterApiUrl;
     const vizItemSourceId = vizItem?.id;
     const orbit = vizItem?.plumeProperties?.orbit;
-    const imageUrl = `${rasterApiUrl}/collections/emit-ch4plume-v1/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
+    const imageUrl = `${rasterApiUrl}/collections/${collectionId}/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
     const tiffUrl = vizItem?.plumeProperties?.assetLink;
     const location = vizItem?.plumeProperties?.location;
     const maxPlumeConcentration = vizItem?.plumeProperties?.maxConcentration;

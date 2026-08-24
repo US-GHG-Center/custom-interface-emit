@@ -8,7 +8,7 @@ import {
 
 /**
  * Component responsible for rendering methane plume layers on the map.
- * It handles dynamic loading, highlighting, visibility toggling, and removal of layers.
+ * It handles dynamic loading, highlighting, and removal of layers.
  *
  * @component
  * @param {Object} props
@@ -19,6 +19,7 @@ import {
  * @param {Array<Plume>} props.vizItems - Array of plume items to render.
  * @param {string} props.highlightedLayer - ID of the plume currently hovered.
  * @param {function} props.onHoverOverLayer - Callback triggered when a plume layer is hovered.
+ * @param {function} props.onHoverOutOfLayer - Callback triggered when the hover leaves a plume layer.
  */
 
 function Plumes({
@@ -29,6 +30,7 @@ function Plumes({
   vizItems,
   highlightedLayer,
   onHoverOverLayer,
+  onHoverOutOfLayer,
 }) {
   const { map } = useMapbox();
 
@@ -37,27 +39,6 @@ function Plumes({
   useEffect(() => {
     setPlumeLayers(vizItems);
   }, [vizItems]);
-  /**
-   * Toggles visibility of the raster layer when a polygon is clicked.
-   * @param {string} layerId - The ID of the layer to toggle.
-   */
-  const handleClickedOnLayer = (layerId) => {
-    if (layerId) {
-      const rasterId = getLayerId('raster', layerId);
-      if (map?.getLayer(rasterId)) {
-        const visibility = map.getLayoutProperty(
-          rasterId,
-          'visibility',
-          'none'
-        );
-        if (visibility === 'none') {
-          map.setLayoutProperty(rasterId, 'visibility', 'visible');
-        } else if (visibility === 'visible') {
-          map.setLayoutProperty(rasterId, 'visibility', 'none');
-        }
-      }
-    }
-  };
   /**
    * Removes raster, polygon, and fill layers and their sources from the map.
    * @param {string} vizItemId - ID of the plume item to remove.
@@ -86,35 +67,54 @@ function Plumes({
   useEffect(() => {
     if (!map) return;
 
-    if (highlightedLayer) {
-      const polygonId = getLayerId('polygon', highlightedLayer);
-      const rasterId = getLayerId('raster', highlightedLayer);
-
-      // Highlight the polygon layer by increasing its line width
-      if (map.getLayer(polygonId)) {
-        map.setPaintProperty(polygonId, 'line-width', 5);
-      }
-
-      // Move the raster layer below the polygon layer for visibility
-      if (map.getLayer(rasterId) && map.getLayer(polygonId)) {
-        map.moveLayer(rasterId, polygonId);
-      }
-    } else {
-      const mapLayers = map.getStyle().layers;
-      const polygonLayers = mapLayers?.filter((item) =>
-        item?.id?.includes('polygon-')
-      );
-      const highlightedLayer = polygonLayers?.filter(
-        (item) => item?.paint['line-width'] === 5
-      );
-
-      // Revert the previously highlighted layer back to normal line width
-      highlightedLayer &&
-        highlightedLayer?.forEach((item) =>
-          map.setPaintProperty(item.id, 'line-width', 2)
+    if (!highlightedLayer) {
+      // Safety net: revert anything left highlighted by an earlier interaction.
+      const revertHighlightedLayers = () => {
+        const mapLayers = map.getStyle()?.layers;
+        const polygonLayers = mapLayers?.filter((item) =>
+          item?.id?.includes('polygon-')
         );
+        polygonLayers
+          ?.filter((item) => item?.paint?.['line-width'] === 5)
+          ?.forEach((item) => map.setPaintProperty(item.id, 'line-width', 2));
+      };
+
+      // `map.getStyle()` throws while the style is still loading, and the map
+      // is handed to us as soon as it is constructed - so on a cold mount the
+      // sweep has to wait for the style before it can read the layer list.
+      if (map.isStyleLoaded()) {
+        revertHighlightedLayers();
+        return;
+      }
+
+      map.once('style.load', revertHighlightedLayers);
+      return () => {
+        map.off('style.load', revertHighlightedLayers);
+      };
     }
-  }, [highlightedLayer]);
+
+    const polygonId = getLayerId('polygon', highlightedLayer);
+    const rasterId = getLayerId('raster', highlightedLayer);
+
+    // Highlight the polygon layer by increasing its line width
+    if (map.getLayer(polygonId)) {
+      map.setPaintProperty(polygonId, 'line-width', 5);
+    }
+
+    // Move the raster layer below the polygon layer for visibility
+    if (map.getLayer(rasterId) && map.getLayer(polygonId)) {
+      map.moveLayer(rasterId, polygonId);
+    }
+
+    // Runs before the next highlight is applied, so a plume is un-highlighted
+    // even when the hover moves straight from one plume to another (scrolling
+    // the card list batches the leave/enter into a single update).
+    return () => {
+      if (map.getLayer(polygonId)) {
+        map.setPaintProperty(polygonId, 'line-width', 2);
+      }
+    };
+  }, [map, highlightedLayer]);
 
   return (
     <VisualizationLayers
@@ -124,8 +124,8 @@ function Plumes({
       colormap={colormap}
       assets={assets}
       onHoverOverLayer={onHoverOverLayer}
+      onHoverOutOfLayer={onHoverOutOfLayer}
       highlightedLayer={highlightedLayer}
-      onClickedOnLayer={handleClickedOnLayer}
       handleRemoveLayer={handleRemoveLayer}
     />
   );
