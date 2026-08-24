@@ -22,7 +22,8 @@ import { useConfig } from '../../../context/configContext';
  * @param {string} props.assets - STAC asset key for the raster layer.
  * @param {Object} props.vizItem - A single plume visualization item (with geometry + metadata)(STAC Item+ metadata).
  * @param {Function} props.onClickedOnLayer - Callback when the polygon is clicked.
- * @param {Function} props.onHoverOverLayer - Callback when hovered (or hover is cleared).
+ * @param {Function} props.onHoverOverLayer - Callback when the polygon is hovered.
+ * @param {Function} props.onHoverOutOfLayer - Callback when the hover leaves the polygon, receives the layer id.
  * @param {Function} props.registerEventHandler - Function to register event handlers for cleanup.
  *
  * @returns {null}
@@ -35,6 +36,7 @@ export const VisualizationLayer = ({
   vizItem,
   onClickedOnLayer,
   onHoverOverLayer,
+  onHoverOutOfLayer,
   registerEventHandler,
 }) => {
   const { map } = useMapbox();
@@ -86,7 +88,12 @@ export const VisualizationLayer = ({
       2
     );
 
-    addFillPolygonToMap(map, vizItem, polygonFillSourceId, polygonFillLayerId);
+    addFillPolygonToMap(
+      map,
+      polygonFeature,
+      polygonFillSourceId,
+      polygonFillLayerId
+    );
     map.setLayoutProperty(rasterLayerId, 'visibility', 'visible');
 
     // Define event handlers
@@ -103,7 +110,7 @@ export const VisualizationLayer = ({
     const hoverClearHandler = (e) => {
       const polygonLayerId = getLayerId('polygon', vizItemId);
       map.setPaintProperty(polygonLayerId, 'line-width', 2);
-      onHoverOverLayer && onHoverOverLayer(null);
+      onHoverOutOfLayer && onHoverOutOfLayer(vizItemId);
     };
 
     // Attach event handlers to the map
@@ -133,6 +140,7 @@ export const VisualizationLayer = ({
  * @param {Array} props.vizItems - List of visualization items currently in view. Array of (STAC + their metadata)
  * @param {string|null} props.highlightedLayer - ID of currently highlighted plume.
  * @param {Function} props.onHoverOverLayer - Hover callback.
+ * @param {Function} props.onHoverOutOfLayer - Hover-out callback, receives the layer id being left.
  * @param {Function} props.onClickedOnLayer - Click callback.
  * @param {Function} props.handleRemoveLayer - Called when a layer is removed. Define
  *                  action for layers that goes out of viewport.
@@ -148,6 +156,7 @@ export const VisualizationLayers = ({
   vizItems,
   highlightedLayer,
   onHoverOverLayer,
+  onHoverOutOfLayer,
   onClickedOnLayer,
   handleRemoveLayer,
 }) => {
@@ -179,12 +188,10 @@ export const VisualizationLayers = ({
     const hoverHandler = getEventHandler(polygonFillLayerId, 'mouseenter');
     const hoverClearHandler = getEventHandler(polygonFillLayerId, 'mouseleave');
 
-    if (map.getLayer(polygonFillLayerId)) {
-      if (clickHandler) map.off('click', polygonFillLayerId, clickHandler);
-      if (hoverHandler) map.off('mouseenter', polygonFillLayerId, hoverHandler);
-      if (hoverClearHandler)
-        map.off('mouseleave', polygonFillLayerId, hoverClearHandler);
-    }
+    if (clickHandler) map.off('click', polygonFillLayerId, clickHandler);
+    if (hoverHandler) map.off('mouseenter', polygonFillLayerId, hoverHandler);
+    if (hoverClearHandler)
+      map.off('mouseleave', polygonFillLayerId, hoverClearHandler);
 
     clearEventHandlers(polygonFillLayerId);
   };
@@ -254,6 +261,7 @@ export const VisualizationLayers = ({
           highlightedLayer={highlightedLayer}
           onClickedOnLayer={onClickedOnLayer}
           onHoverOverLayer={onHoverOverLayer}
+          onHoverOutOfLayer={onHoverOutOfLayer}
           VMIN={VMIN}
           VMAX={VMAX}
           colormap={colormap}
