@@ -1,4 +1,4 @@
-import { useEffect, useState, forwardRef } from 'react';
+import { useEffect, useState, useRef, forwardRef } from 'react';
 
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
@@ -10,6 +10,7 @@ import Divider from '@mui/material/Divider';
 import DownloadIcon from '@mui/icons-material/Download';
 import './index.css';
 import { useConfig } from '../../../context/configContext';
+import { getPlumePreviewUrl } from '../../../utils/previewUrl';
 
 const HorizontalLayout = styled.div`
   width: 100%;
@@ -32,6 +33,9 @@ const HighlightableCard = styled(Card)`
     //eslint-disable-next-line prettier/prettier
     props.$isHovered ? '1px solid #4866ff' : '1px solid transparent'};
 `;
+
+const MAX_IMAGE_RETRIES = 2;
+const RETRY_DELAY_MS = 600;
 
 const CaptionValue = ({ caption, value, className }) => {
   return (
@@ -98,7 +102,35 @@ export const VisualizationItemCard = forwardRef(
     const rasterApiUrl = config.rasterApiUrl;
     const vizItemSourceId = vizItem?.id;
     const orbit = vizItem?.plumeProperties?.orbit;
-    const imageUrl = `${rasterApiUrl}/collections/${collectionId}/items/${vizItemSourceId}/preview.png?bidx=1&assets=ch4-plume-emissions&rescale=1%2C1500&resampling=bilinear&colormap_name=plasma`;
+    const imageUrl = getPlumePreviewUrl(
+      rasterApiUrl,
+      collectionId,
+      vizItemSourceId,
+      vizItem?.polygonGeometry
+    );
+
+    // The raster API intermittently drops an image request, which would
+    // otherwise leave a permanently broken thumbnail on the card.
+    const [imageAttempt, setImageAttempt] = useState(0);
+    const retryTimer = useRef(null);
+    const imageSrc =
+      imageAttempt === 0 ? imageUrl : `${imageUrl}&retry=${imageAttempt}`;
+
+    useEffect(() => {
+      setImageAttempt(0);
+    }, [imageUrl]);
+
+    useEffect(() => () => clearTimeout(retryTimer.current), []);
+
+    const handleImageError = () => {
+      if (imageAttempt >= MAX_IMAGE_RETRIES) return;
+      clearTimeout(retryTimer.current);
+      retryTimer.current = setTimeout(
+        () => setImageAttempt((attempt) => attempt + 1),
+        RETRY_DELAY_MS * (imageAttempt + 1)
+      );
+    };
+
     const tiffUrl = vizItem?.plumeProperties?.assetLink;
     const location = vizItem?.plumeProperties?.location;
     const maxPlumeConcentration = vizItem?.plumeProperties?.maxConcentration;
@@ -151,19 +183,27 @@ export const VisualizationItemCard = forwardRef(
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              flexShrink: 0
+              flexShrink: 0,
+              alignSelf: 'center',
+              // Each cropped preview has its own aspect ratio, so the box is a
+              // fixed size and the image is contained inside it; sizing to the
+              // image would make this column a different width on every card.
+              boxSizing: 'content-box',
+              width: '120px',
+              height: '100px',
+              padding: '0.8em',
             }}
           >
             <CardMedia
               component='img'
-              height='100'
               sx={{
-                padding: '0.8em',
+                width: '100%',
+                height: '100%',
                 objectFit: 'contain',
-                minWidth: '80px',
                 imageRendering: 'pixelated',
               }}
-              image={imageUrl}
+              image={imageSrc}
+              onError={handleImageError}
               alt='plume image'
             />
           </div>
